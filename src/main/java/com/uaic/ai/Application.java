@@ -5,9 +5,11 @@ import com.uaic.ai.service.ColumnsRecognitionImpl;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
 
+@SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
