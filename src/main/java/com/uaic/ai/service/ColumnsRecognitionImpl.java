@@ -15,7 +15,6 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-
     public static boolean isGoodSelection(int i, ArrayList<Integer> selection) {
         if (i > 2 && (selection.get(i - 3).equals(selection.get(i)) && selection.get(i - 2).equals(selection.get(i))
                 && selection.get(i - 1).equals(selection.get(i))))
@@ -102,35 +101,6 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
         }
 
         return columnsDelimitation;
-    }
-
-    public static void main(String[] args) {
-
-        Mat image = Imgcodecs.imread("sample.jpg");
-
-        Pixel[][] pixels = getPixelsFromImage(image);
-
-        ArrayList<Double> columnsBlackness = getColumnsBlackness(pixels);
-
-        ArrayList<Integer> columnsDelimitation = getColumnsDelimitation(columnsBlackness);
-
-        for (Integer number : columnsDelimitation) {
-            System.out.print(number);
-        }
-
-        System.out.println();
-        boolean inColumn = false;
-        for (int i = 1; i < columnsDelimitation.size(); i++) {
-            if (columnsDelimitation.get(i) != columnsDelimitation.get(i - 1)) {
-                if (!inColumn) {
-                    System.out.print("Coloana incepe de la " + i);
-                } else {
-                    System.out.println(" si se sfarseste la " + i);
-                }
-                inColumn = !inColumn;
-            }
-        }
-
     }
 
 }
