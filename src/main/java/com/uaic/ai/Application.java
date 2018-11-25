@@ -10,6 +10,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Application {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         nu.pattern.OpenCV.loadShared();
 
-        //SpringApplication.run(Application.class);
+        SpringApplication.run(Application.class);
 
 
 
@@ -65,15 +66,15 @@ public class Application {
 
         */
 
-        TextRecognitionImpl tr = new TextRecognitionImpl();
-        //tr.analyse1();
-        Mat img1 = Imgcodecs.imread("D:\\Andy\\an3\\InteligentaArtificiala_IA\\images\\Screenshot_5.png");
-        List<Rect> letterBBoxes1=tr.detectLetters(img1);
-
-        for(int i=0; i< letterBBoxes1.size(); i++)
-            Imgproc.rectangle(img1,letterBBoxes1.get(i).br(), letterBBoxes1.get(i).tl(),new Scalar(0,255,0),3,8,0);
-        Imgcodecs.imwrite("D:\\Andy\\an3\\InteligentaArtificiala_IA\\images\\Screenshot_5-XX.png", img1);
-
+//        TextRecognitionImpl tr = new TextRecognitionImpl();
+//        //tr.analyse1();
+//        Mat img1 = Imgcodecs.imread("D:\\Andy\\an3\\InteligentaArtificiala_IA\\images\\Screenshot_5.png");
+//        List<Rect> letterBBoxes1=tr.detectLetters(img1);
+//
+//        for(int i=0; i< letterBBoxes1.size(); i++)
+//            Imgproc.rectangle(img1,letterBBoxes1.get(i).br(), letterBBoxes1.get(i).tl(),new Scalar(0,255,0),3,8,0);
+//        Imgcodecs.imwrite("D:\\Andy\\an3\\InteligentaArtificiala_IA\\images\\Screenshot_5-XX.png", img1);
+//
 
 
     }
