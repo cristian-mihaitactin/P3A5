@@ -1,4 +1,5 @@
+package com.uaic.ai.service;
 
-public interface BinaryMatrix {
+public interface BinaryMatrix{
 
 }
