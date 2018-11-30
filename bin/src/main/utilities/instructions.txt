@@ -1,0 +1,24 @@
+
+
+( FOR INTELLIJ )
+Maven:
+    -  https://www.mkyong.com/maven/how-to-install-maven-in-windows/
+    -  ! better name that system variable M2_HOME instead of MAVEN_HOME
+    -  http://prntscr.com/lmo3nb
+    -  s-ar putea sa trebuiasca un restart dupa ce ati adaugat System Variable
+
+    - dupa ce ati facut astea, intrati in proiect in pom.xml (langa .gitignore) si ar trebui sa va apara
+      in dreapta jos "Import Changes"  http://prntscr.com/lmo482 . Prima data cand instalati maven o sa dureze
+      ceva timp pana trage tot ce are nevoie.
+
+    - ca sa fii sigur ca merge maven-ul si totul s-a importat, intra intr-o clasa random si verifica ca import-urile
+      sa nu fie cu rosu (undefined).
+
+
+
+OpenCV:
+    - copy and paste the opencv_java343.dll into "C:\Program Files\Java\<JDK-VERSION>\bin" and
+    rename it to opencv_java342.dll
+
+    - to make sure it works, run main() from class Application ( in src\main\java\com.uaic.ai\ ) AFTER changing
+    the path to "sample.jpg" to absolute path ( ex: D:\facultate\InteligentaArtificiala\P3A5\src\main\resources\sample.jpg )
