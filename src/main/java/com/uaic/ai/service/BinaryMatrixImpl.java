@@ -8,13 +8,15 @@ public class BinaryMatrixImpl implements BinaryMatrix {
 
     private boolean[][] matrix;
 
-    public BinaryMatrixImpl() { }
+    public BinaryMatrixImpl() {
+    }
 
-    public void compute(String path) {
+    public void createMatrix(String path) {
         Mat pixelMatrix = Imgcodecs.imread(path);
         byte[] data = new byte[3];
         matrix = new boolean[pixelMatrix.rows()][pixelMatrix.cols()];
         int darkPixel = 0, brightPixel = 0, brightness = 0, pixel, darkPixelCount = 0;
+
         //GET BRIGHTEST AND DARKEST PIXEL
         for (int i = 0; i < pixelMatrix.rows(); i++) {
             for (int j = 0; j < pixelMatrix.cols(); j++) {
@@ -57,7 +59,6 @@ public class BinaryMatrixImpl implements BinaryMatrix {
         return matrix;
     }
 
-
     public void setMatrix(boolean[][] matrix) {
         this.matrix = matrix;
     }
@@ -66,48 +67,59 @@ public class BinaryMatrixImpl implements BinaryMatrix {
         return getFootnotesBeginningLine() != -1;
     }
 
+
+    private int[] getBlackPixelsPerLine(boolean[][] matrix) {
+        int[] blackPixelsInLine = new int[matrix.length];
+        int blackPixelCount;
+        for (int i = 0; i < matrix.length; i++) {
+            blackPixelCount = 0;
+            for (int j = 0; j < matrix[i].length; j++) {
+                blackPixelCount += matrix[i][j] ? 1 : 0;
+            }
+            blackPixelsInLine[i] = blackPixelCount;
+        }
+        return blackPixelsInLine;
+    }
+
+
     public int getFootnotesBeginningLine() {
 
         //TODO: remove this when refactor code, should be only in Application
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        BinaryMatrixImpl m = new BinaryMatrixImpl();
-        m.compute("C:\\Users\\MasterCode\\Desktop\\AI proiect\\2.jpg");
+
+        createMatrix("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\page-with-footnote-3.jpg");
         double blackPixelsPerLine = 0, blackPixelsPerTextLine = 0, blackPixelsPerEmptyLine = 0;
         int blackPixelCount = 0, textLines = 0, emptyLines = 0;
-        int[] blackPixelsInLine = new int[m.matrix.length];
-        double[] linesPixelPercentage = new double[m.matrix.length];
+        int[] blackPixelsInLine = new int[matrix.length];
+        double[] linesPixelPercentage = new double[matrix.length];
 
-        double actualPixelsPerLine = 0;
+        double avgBlackPixelsPerLine = 0;
         double avgEmptyLinesBetweenTextsLines = 0;
         int emptySpacesCount = 0;
         double inferiorLimit = 0;
 
+        blackPixelsInLine = getBlackPixelsPerLine(matrix);
 
-
-        for (int i = 0; i < m.matrix.length; i++) {
-            blackPixelCount = 0;
-            for (int j = 0; j < m.matrix[i].length; j++) {
-                blackPixelCount += m.matrix[i][j] ? 1 : 0;
-            }
-            blackPixelsInLine[i] = blackPixelCount;
-        }
-        blackPixelCount = 0;
+        // count number of black pixels in page
         for (int i = 0; i < blackPixelsInLine.length; i++)
             blackPixelCount += blackPixelsInLine[i];
 
-        blackPixelsPerLine = (double) blackPixelCount / (m.matrix.length * m.matrix[0].length);
-        for (int i = 0; i < m.matrix.length; i++) {
 
-            if (((double) blackPixelsInLine[i] / m.matrix[i].length) > blackPixelsPerLine) {
-                blackPixelsPerTextLine += (double) blackPixelsInLine[i] / m.matrix[i].length;
+        // count empty lines and text lines
+        blackPixelsPerLine = (double) blackPixelCount / (matrix.length * matrix[0].length);
+        for (int i = 0; i < matrix.length; i++) {
+
+            if (((double) blackPixelsInLine[i] / matrix[i].length) > blackPixelsPerLine) {
+                blackPixelsPerTextLine += (double) blackPixelsInLine[i] / matrix[i].length;
                 textLines++;
             } else {
-                blackPixelsPerEmptyLine += (double) blackPixelsInLine[i] / m.matrix[i].length;
+                blackPixelsPerEmptyLine += (double) blackPixelsInLine[i] / matrix[i].length;
                 emptyLines++;
             }
         }
-        blackPixelsPerTextLine = blackPixelsPerTextLine / textLines;
+
+//        blackPixelsPerTextLine = blackPixelsPerTextLine / textLines;
         blackPixelsPerEmptyLine = blackPixelsPerEmptyLine / emptyLines;
 
 
@@ -116,8 +128,10 @@ public class BinaryMatrixImpl implements BinaryMatrix {
         boolean lineIsText[] = new boolean[blackPixelsInLine.length];
 
         for (int i = 0; i < blackPixelsInLine.length; i++) {
-            actualPixelsPerLine = (double) blackPixelsInLine[i] / m.matrix[i].length;
-            if (((actualPixelsPerLine - blackPixelsPerEmptyLine) * (actualPixelsPerLine - blackPixelsPerEmptyLine)) < ((actualPixelsPerLine - blackPixelsPerLine) * (actualPixelsPerLine - blackPixelsPerLine))) {
+            avgBlackPixelsPerLine = (double) blackPixelsInLine[i] / matrix[i].length;
+
+            // avgBlackPixelsPerLine closer to number of blackPixels per empty line, or to number of pixels per text line ?
+            if (((avgBlackPixelsPerLine - blackPixelsPerEmptyLine) * (avgBlackPixelsPerLine - blackPixelsPerEmptyLine)) < ((avgBlackPixelsPerLine - blackPixelsPerLine) * (avgBlackPixelsPerLine - blackPixelsPerLine))) {
                 lineIsText[i] = false;
                 emptyLines++;
             } else {
@@ -127,30 +141,30 @@ public class BinaryMatrixImpl implements BinaryMatrix {
                     emptyLines = 0;
                     emptySpacesCount++;
                 }
-
             }
         }
         avgEmptyLinesBetweenTextsLines = avgEmptyLinesBetweenTextsLines / emptySpacesCount;
 
-        emptyLines = 0;
+
+        int consecutiveEmptyLines = 0;
         emptySpacesCount = 0;
         for (int i = 0; i < lineIsText.length; i++) {
             if (!lineIsText[i]) {
-                emptyLines++;
-
+                consecutiveEmptyLines++;
             } else {
-                if ((emptyLines > avgEmptyLinesBetweenTextsLines) && (emptyLines > 0)) {
-                    inferiorLimit += emptyLines;
+                if ((consecutiveEmptyLines > avgEmptyLinesBetweenTextsLines) && (consecutiveEmptyLines > 0)) {
+                    inferiorLimit += consecutiveEmptyLines;
                     emptySpacesCount++;
-                    emptyLines = 0;
+                    consecutiveEmptyLines = 0;
                 }
             }
         }
         avgEmptyLinesBetweenTextsLines = inferiorLimit / emptySpacesCount;
+
+
         emptyLines = 0;
         emptySpacesCount = 0;
 
-        //UNCOMMENT FOR DEBUG PURPOSE
         for (int i = lineIsText.length - (lineIsText.length / 3); i < lineIsText.length; i++) {
 
             if (!lineIsText[i]) {
@@ -168,24 +182,25 @@ public class BinaryMatrixImpl implements BinaryMatrix {
             }
 
 			/*
-			for(int j=0;j<m.matrix[i].length;j++)
-				System.out.print(m.matrix[i][j]?1:" ");
+			for(int j=0;j<matrix[i].length;j++)
+				System.out.print(matrix[i][j]?1:" ");
 			System.out.println(" ");
 			*/
         }
 
 
-        //PRINT STATISTICS
+        //TODO: move this in Statistics class
 		/*System.out.println("Empty lines: "+emptyLines);
-		System.out.println("Black Pixels Per Line: "+blackPixelsPerLine);
-		System.out.println("Black Pixels Per Text Line: "+blackPixelsPerTextLine);
-		System.out.println("Black Pixels Per Empty Line: "+blackPixelsPerEmptyLine);
-		System.out.println("Average Empty Lines Between Texts Lines: "+avgEmptyLinesBetweenTextsLines);
-		System.out.println("Large Empty Spaces between texts in the footnote zone: "+emptySpacesCount);*/
+		System.out.println("Black Pixels Per Line: " + blackPixelsPerLine);
+		System.out.println("Black Pixels Per Text Line: " + blackPixelsPerTextLine);
+		System.out.println("Black Pixels Per Empty Line: " + blackPixelsPerEmptyLine);
+		System.out.println("Average Empty Lines Between Texts Lines: " + avgEmptyLinesBetweenTextsLines);
+		System.out.println("Large Empty Spaces between texts in the footnote zone: " + emptySpacesCount);*/
 
         return -1;
 
 
     }
+
 
 }
