@@ -28,30 +28,14 @@ public class Application {
 
 
         //give ABSOLUTE path to resources. Relative won't work
-        Mat image = Imgcodecs.imread("\\...\\sample.jpg");
+        Mat mat = Imgcodecs.imread("C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\sample.jpg");
 
-        Pixel[][] pixels = ColumnsRecognitionImpl.getPixelsFromImage(image);
-
-        ArrayList<Double> columnsBlackness = ColumnsRecognitionImpl.getColumnsBlackness(pixels);
-
-        ArrayList<Integer> columnsDelimitation = ColumnsRecognitionImpl.getColumnsDelimitation(columnsBlackness);
-
-        for (Integer number : columnsDelimitation) {
-            System.out.print(number);
-        }
-
-        System.out.println();
-        boolean inColumn = false;
-        for (int i = 1; i < columnsDelimitation.size(); i++) {
-            if (!columnsDelimitation.get(i).equals(columnsDelimitation.get(i - 1))) {
-                if (!inColumn) {
-                    System.out.print("Coloana incepe de la " + i);
-                } else {
-                    System.out.println(" si se sfarseste la " + i);
-                }
-                inColumn = !inColumn;
-            }
-        }
+        // Image image = new Image();
+        //computeBinaryMatrix(image,mat);
+        //computeFootnote(image);
+        //computeHeader(image);
+        //computeColumns(image);
+        //return image
 
     }
 
