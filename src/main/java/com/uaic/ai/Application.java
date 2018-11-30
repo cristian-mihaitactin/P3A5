@@ -1,6 +1,9 @@
 package com.uaic.ai;
 
+import com.uaic.ai.model.Image;
 import com.uaic.ai.model.Pixel;
+import com.uaic.ai.service.BinaryMatrix;
+import com.uaic.ai.service.BinaryMatrixImpl;
 import com.uaic.ai.service.ColumnsRecognitionImpl;
 import com.uaic.ai.service.TextRecognition;
 import com.uaic.ai.service.TextRecognitionImpl;
@@ -35,10 +38,12 @@ public class Application {
 
 
 
-
-        /*
-        //give ABSOLUTE path to resources. Relative won't work
-        Mat mat = Imgcodecs.imread("C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\sample.jpg");
+        BinaryMatrixImpl matrix = new BinaryMatrixImpl();
+        matrix.createMatrix("C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\sampleW.jpg");
+        
+        Image image = new Image();
+        image.pixels = matrix.getMatrix();
+        System.out.println(ColumnsRecognitionImpl.computeColumns(image));
 
         // Image image = new Image();
         //computeBinaryMatrix(image,mat);
@@ -46,9 +51,6 @@ public class Application {
         //computeHeader(image);
         //computeColumns(image);
         //return image
-
-
-        */
 
 //        TextRecognitionImpl tr = new TextRecognitionImpl();
 //        //tr.analyse1();
