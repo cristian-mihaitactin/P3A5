@@ -20,17 +20,16 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 	}
 
 	private static boolean isGoodSelection(int i, ArrayList<Integer> selection) {
-		if (i > 2 && (selection.get(i - 3).equals(selection.get(i)) && selection.get(i - 2).equals(selection.get(i))
-				&& selection.get(i - 1).equals(selection.get(i))))
+		if (i > 1 && (selection.get(i - 2).equals(selection.get(i)) && selection.get(i - 1).equals(selection.get(i))))
 			return true;
-		if (i < selection.size() - 3 && (selection.get(i + 3).equals(selection.get(i))
-				&& selection.get(i + 2).equals(selection.get(i)) && selection.get(i + 1).equals(selection.get(i))))
+		if (i < selection.size() - 2
+				&& (selection.get(i + 2).equals(selection.get(i)) && selection.get(i + 1).equals(selection.get(i))))
 			return true;
 
 		return false;
 	}
 
-	public static ArrayList<Double> getVerticalBlackness(boolean[][] pixels) {
+	private static ArrayList<Double> getVerticalBlackness(boolean[][] pixels) {
 		ArrayList<Double> verticalBlackness = new ArrayList<Double>();
 
 		for (int i = 0; i < pixels[0].length; i++) {
@@ -39,7 +38,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 
 		for (int i = 0; i < pixels.length; i++) {
 			for (int j = 0; j < pixels[i].length; j++) {
-				verticalBlackness.set(j, verticalBlackness.get(j) + (pixels[i][j]? 0 : 1));
+				verticalBlackness.set(j, verticalBlackness.get(j) + (pixels[i][j] ? 0 : 1));
 			}
 		}
 
@@ -50,7 +49,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return verticalBlackness;
 	}
 
-	public static ArrayList<Double> getHorizontalBlackness(boolean[][] pixels) {
+	private static ArrayList<Double> getHorizontalBlackness(boolean[][] pixels) {
 		ArrayList<Double> horizontalBlackness = new ArrayList<Double>();
 
 		for (int i = 0; i < pixels.length; i++) {
@@ -59,7 +58,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 
 		for (int i = 0; i < pixels.length; i++) {
 			for (int j = 0; j < pixels[i].length; j++) {
-				horizontalBlackness.set(i, horizontalBlackness.get(i) + (pixels[i][j]? 0 : 1));
+				horizontalBlackness.set(i, horizontalBlackness.get(i) + (pixels[i][j] ? 0 : 1));
 			}
 		}
 
@@ -121,7 +120,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return delimitation;
 	}
 
-	public static ArrayList<Integer> getDelimitation(ArrayList<Double> blackness) {
+	private static ArrayList<Integer> getDelimitation(ArrayList<Double> blackness) {
 		double averageBlackness = 0d;
 
 		for (Double number : blackness) {
@@ -167,55 +166,56 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		column.bottomRightCorner.y = column.bottomRightCorner.y - lowerEmptySpace;
 	}
 
-	private static void computeLinesOfColumn(Image image, Column column) {
+	public static void computeLinesOfColumns(Image image) {
 
-		boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, column.topLeftCorner,
-				column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
-		ArrayList<Double> horizontalBlackness = getHorizontalBlackness(pixels);
+		for (Column column : image.columns) {
+			boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, column.topLeftCorner,
+					column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
+			ArrayList<Double> horizontalBlackness = getHorizontalBlackness(pixels);
+			ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness);
 
-		ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness);
-
-		int lineStart = 0;
-		int lastItem = 1;
-		for (int i = 0; i < delimitation.size(); i++) {
-			if(delimitation.get(i) != lastItem) {
-				if(lastItem == 1) {
-					lineStart = i;
-				} else {
-					column.lines
-					.add(new Line(new Point(column.topLeftCorner.x, column.topLeftCorner.y + lineStart),
-							new Point(column.topRightCorner.x, column.topLeftCorner.y + lineStart),
-							new Point(column.topLeftCorner.x, column.topLeftCorner.y + i),
-							new Point(column.topRightCorner.x, column.topLeftCorner.y + i)));
+			int lineStart = 0;
+			int lastItem = 1;
+			for (int i = 0; i < delimitation.size(); i++) {
+				if (delimitation.get(i) != lastItem) {
+					if (lastItem == 1) {
+						lineStart = i;
+					} else {
+						column.lines.add(new Line(new Point(column.topLeftCorner.x, column.topLeftCorner.y + lineStart),
+								new Point(column.topRightCorner.x, column.topLeftCorner.y + lineStart),
+								new Point(column.topLeftCorner.x, column.topLeftCorner.y + i),
+								new Point(column.topRightCorner.x, column.topLeftCorner.y + i)));
+					}
 				}
+				lastItem = delimitation.get(i);
 			}
-			lastItem = delimitation.get(i);
 		}
 	}
 
-	public static ArrayList<Column> computeColumns(Image image) {
+	public static void computeColumns(Image image) {
 		Point topLeftCorner;
 		Point topRightCorner;
 		Point bottomLeftCorner;
 		Point bottomRightCorner;
-		
-		if(image.header == null) {
-			topLeftCorner = new Point(0,0);
-			topRightCorner = new Point(image.pixels[0].length,0);
+
+		if (image.header == null) {
+			topLeftCorner = new Point(0, 0);
+			topRightCorner = new Point(image.pixels[0].length, 0);
 		} else {
 			topLeftCorner = image.header.bottomLeftCorner;
 			topRightCorner = image.header.bottomRightCorner;
 		}
-		
-		if(image.footnote == null) {
-			bottomLeftCorner = new Point(0,image.pixels.length);
+
+		if (image.footnote == null) {
+			bottomLeftCorner = new Point(0, image.pixels.length);
 			bottomRightCorner = new Point(image.pixels[0].length, image.pixels.length);
 		} else {
 			bottomLeftCorner = image.footnote.topLeftCorner;
 			bottomRightCorner = image.footnote.topRightCorner;
 		}
-		
-		boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner);
+
+		boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, topLeftCorner, topRightCorner,
+				bottomLeftCorner, bottomRightCorner);
 		ArrayList<Column> columns = new ArrayList<Column>();
 
 		ArrayList<Double> columnsBlackness = ColumnsRecognitionImpl.getVerticalBlackness(pixels);
@@ -225,12 +225,12 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		int columnStart = 0;
 		int lastItem = 1;
 		for (int i = 0; i < columnsDelimitation.size(); i++) {
-			if(columnsDelimitation.get(i) != lastItem) {
-				if(lastItem == 1) {
+			if (columnsDelimitation.get(i) != lastItem) {
+				if (lastItem == 1) {
 					columnStart = i;
 				} else {
 					columns.add(new Column(new Point(columnStart, 0), new Point(i, 0),
-							new Point(columnStart, image.pixels[0].length - 1), new Point(i, image.pixels[0].length - 1)));
+							new Point(columnStart, image.pixels.length), new Point(i, image.pixels.length)));
 				}
 			}
 			lastItem = columnsDelimitation.get(i);
@@ -240,10 +240,6 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 			verticallyCorrectColumn(image, column);
 		}
 
-		for (Column column : columns) {
-			computeLinesOfColumn(image, column);
-		}
-
-		return columns;
+		image.columns = columns;
 	}
 }
