@@ -31,7 +31,7 @@ public class Application {
 		SpringApplication.run(Application.class);
 		
 		//The outPath is the output of the text cleaning command
-		String inPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\sampleW.jpg";
+		String inPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\anotherSample.png";
 		String outPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\output.jpg";
 		String[] command = { "magick", "convert", "-lat", "20x20-10%", inPath, outPath };
 		try {

@@ -177,7 +177,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 			int lineStart = 0;
 			int lastItem = 1;
 			for (int i = 0; i < delimitation.size(); i++) {
-				if (delimitation.get(i) != lastItem) {
+				if (delimitation.get(i) != lastItem || i == delimitation.size() - 1) {
 					if (lastItem == 1) {
 						lineStart = i;
 					} else {
@@ -225,7 +225,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		int columnStart = 0;
 		int lastItem = 1;
 		for (int i = 0; i < columnsDelimitation.size(); i++) {
-			if (columnsDelimitation.get(i) != lastItem) {
+			if (columnsDelimitation.get(i) != lastItem || i == columnsDelimitation.size() - 1) {
 				if (lastItem == 1) {
 					columnStart = i;
 				} else {

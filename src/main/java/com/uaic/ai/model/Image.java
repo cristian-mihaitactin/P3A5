@@ -11,7 +11,7 @@ public class Image {
 	public Statistics statistics;
 	@Override
 	public String toString() {
-		return "Image [pixels=" + Arrays.toString(pixels) + ", columns=" + columns + ", footnote=" + footnote
+		return "Image [ columns=" + columns + ", footnote=" + footnote
 				+ ", header=" + header + ", statistics=" + statistics + "]";
 	}
 
