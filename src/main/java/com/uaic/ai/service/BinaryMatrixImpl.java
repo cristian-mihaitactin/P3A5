@@ -3,7 +3,9 @@ package com.uaic.ai.service;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BinaryMatrixImpl implements BinaryMatrix {
 
     private boolean[][] matrix;
@@ -67,8 +69,7 @@ public class BinaryMatrixImpl implements BinaryMatrix {
         return getFootnotesBeginningLine() != -1;
     }
 
-
-    private int[] getBlackPixelsPerLine(boolean[][] matrix) {
+    public int[] getBlackPixelsPerLine(boolean[][] matrix) {
         int[] blackPixelsInLine = new int[matrix.length];
         int blackPixelCount;
         for (int i = 0; i < matrix.length; i++) {
@@ -80,7 +81,6 @@ public class BinaryMatrixImpl implements BinaryMatrix {
         }
         return blackPixelsInLine;
     }
-
 
     public int getFootnotesBeginningLine() {
 

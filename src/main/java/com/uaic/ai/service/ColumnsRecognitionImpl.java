@@ -19,17 +19,17 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 
-	private static boolean isGoodSelection(int i, ArrayList<Integer> selection) {
+	@Override
+	public boolean isGoodSelection(int i, ArrayList<Integer> selection) {
 		if (i > 1 && (selection.get(i - 2).equals(selection.get(i)) && selection.get(i - 1).equals(selection.get(i))))
 			return true;
-		if (i < selection.size() - 2
-				&& (selection.get(i + 2).equals(selection.get(i)) && selection.get(i + 1).equals(selection.get(i))))
+		if (i < selection.size() - 2 && (selection.get(i + 2).equals(selection.get(i)) && selection.get(i + 1).equals(selection.get(i))))
 			return true;
 
 		return false;
 	}
 
-	private static ArrayList<Double> getVerticalBlackness(boolean[][] pixels) {
+	public ArrayList<Double> getVerticalBlackness(boolean[][] pixels) {
 		ArrayList<Double> verticalBlackness = new ArrayList<Double>();
 
 		for (int i = 0; i < pixels[0].length; i++) {
@@ -49,7 +49,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return verticalBlackness;
 	}
 
-	private static ArrayList<Double> getHorizontalBlackness(boolean[][] pixels) {
+	public ArrayList<Double> getHorizontalBlackness(boolean[][] pixels) {
 		ArrayList<Double> horizontalBlackness = new ArrayList<Double>();
 
 		for (int i = 0; i < pixels.length; i++) {
@@ -69,7 +69,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return horizontalBlackness;
 	}
 
-	private static void thickenDelimitation(ArrayList<Integer> columnsDelimitation) {
+	public void thickenDelimitation(ArrayList<Integer> columnsDelimitation) {
 		for (int i = 1; i < columnsDelimitation.size() - 1; i++) {
 			if (columnsDelimitation.get(i) == 1 && columnsDelimitation.get(i - 1) == 0
 					&& columnsDelimitation.get(i + 1) == 0) {
@@ -84,7 +84,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		}
 	}
 
-	private static ArrayList<Integer> normalizeDelimitation(ArrayList<Integer> delimitation) {
+	public ArrayList<Integer> normalizeDelimitation(ArrayList<Integer> delimitation) {
 		int thickeningOffset = delimitation.size() / 60;
 
 		ArrayList<Integer> leftRightNormalization = (ArrayList<Integer>) delimitation.clone();
@@ -120,7 +120,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return delimitation;
 	}
 
-	private static ArrayList<Integer> getDelimitation(ArrayList<Double> blackness) {
+	public ArrayList<Integer> getDelimitation(ArrayList<Double> blackness) {
 		double averageBlackness = 0d;
 
 		for (Double number : blackness) {
@@ -140,7 +140,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return normalizeDelimitation(delimitation);
 	}
 
-	private static void verticallyCorrectColumn(Image image, Column column) {
+	public void verticallyCorrectColumn(Image image, Column column) {
 		boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, column.topLeftCorner,
 				column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
 		ArrayList<Double> horizontalBlackness = getHorizontalBlackness(pixels);
@@ -166,7 +166,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		column.bottomRightCorner.y = column.bottomRightCorner.y - lowerEmptySpace;
 	}
 
-	public static void computeLinesOfColumns(Image image) {
+	public void computeLinesOfColumns(Image image) {
 
 		for (Column column : image.columns) {
 			boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, column.topLeftCorner,
@@ -192,7 +192,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		}
 	}
 
-	public static void computeColumns(Image image) {
+	public void computeColumns(Image image) {
 		Point topLeftCorner;
 		Point topRightCorner;
 		Point bottomLeftCorner;
@@ -218,9 +218,9 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 				bottomLeftCorner, bottomRightCorner);
 		ArrayList<Column> columns = new ArrayList<Column>();
 
-		ArrayList<Double> columnsBlackness = ColumnsRecognitionImpl.getVerticalBlackness(pixels);
+		ArrayList<Double> columnsBlackness = getVerticalBlackness(pixels);
 
-		ArrayList<Integer> columnsDelimitation = ColumnsRecognitionImpl.getDelimitation(columnsBlackness);
+		ArrayList<Integer> columnsDelimitation = getDelimitation(columnsBlackness);
 
 		int columnStart = 0;
 		int lastItem = 1;

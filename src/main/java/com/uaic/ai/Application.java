@@ -1,24 +1,11 @@
 package com.uaic.ai;
 
 import com.uaic.ai.model.Image;
-import com.uaic.ai.model.Pixel;
-import com.uaic.ai.service.BinaryMatrix;
 import com.uaic.ai.service.BinaryMatrixImpl;
 import com.uaic.ai.service.ColumnsRecognitionImpl;
-import com.uaic.ai.service.TextRecognition;
-import com.uaic.ai.service.TextRecognitionImpl;
 import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class Application {
@@ -29,8 +16,11 @@ public class Application {
 		nu.pattern.OpenCV.loadShared();
 
 		SpringApplication.run(Application.class);
-		
+
+		/*
+
 		//The outPath is the output of the text cleaning command
+		ColumnsRecognitionImpl columnsRecognitionImpl = new ColumnsRecognitionImpl();
 		String inPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\anotherSample.png";
 		String outPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\output.jpg";
 		String[] command = { "magick", "convert", "-lat", "20x20-10%", inPath, outPath };
@@ -50,9 +40,9 @@ public class Application {
 		BinaryMatrixImpl matrix = new BinaryMatrixImpl();
 		matrix.createMatrix(outPath);
 		image.pixels = matrix.getMatrix();
-		
-		ColumnsRecognitionImpl.computeColumns(image);
-		ColumnsRecognitionImpl.computeLinesOfColumns(image);
+
+		columnsRecognitionImpl.computeColumns(image);
+		columnsRecognitionImpl.computeLinesOfColumns(image);
 		
 		System.out.println(image);
 
@@ -77,6 +67,9 @@ public class Application {
 		// Imgcodecs.imwrite("D:\\Andy\\an3\\InteligentaArtificiala_IA\\images\\Screenshot_5-XX.png",
 		// img1);
 		//
+
+
+		*/
 
 	}
 
