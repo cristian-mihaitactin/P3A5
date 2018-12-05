@@ -29,6 +29,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return false;
 	}
 
+	@Override
 	public ArrayList<Double> getVerticalBlackness(boolean[][] pixels) {
 		ArrayList<Double> verticalBlackness = new ArrayList<Double>();
 
@@ -49,6 +50,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return verticalBlackness;
 	}
 
+	@Override
 	public ArrayList<Double> getHorizontalBlackness(boolean[][] pixels) {
 		ArrayList<Double> horizontalBlackness = new ArrayList<Double>();
 
@@ -69,6 +71,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return horizontalBlackness;
 	}
 
+    @Override
 	public void thickenDelimitation(ArrayList<Integer> columnsDelimitation) {
 		for (int i = 1; i < columnsDelimitation.size() - 1; i++) {
 			if (columnsDelimitation.get(i) == 1 && columnsDelimitation.get(i - 1) == 0
@@ -84,6 +87,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		}
 	}
 
+    @Override
 	public ArrayList<Integer> normalizeDelimitation(ArrayList<Integer> delimitation) {
 		int thickeningOffset = delimitation.size() / 60;
 
@@ -120,6 +124,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return delimitation;
 	}
 
+    @Override
 	public ArrayList<Integer> getDelimitation(ArrayList<Double> blackness) {
 		double averageBlackness = 0d;
 
@@ -140,6 +145,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return normalizeDelimitation(delimitation);
 	}
 
+    @Override
 	public void verticallyCorrectColumn(Image image, Column column) {
 		boolean[][] pixels = SimpleOperationsImpl.getPartOfPixels(image.pixels, column.topLeftCorner,
 				column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
@@ -166,6 +172,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		column.bottomRightCorner.y = column.bottomRightCorner.y - lowerEmptySpace;
 	}
 
+    @Override
 	public void computeLinesOfColumns(Image image) {
 
 		for (Column column : image.columns) {
@@ -192,6 +199,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		}
 	}
 
+    @Override
 	public void computeColumns(Image image) {
 		Point topLeftCorner;
 		Point topRightCorner;

@@ -8,10 +8,10 @@ public interface BinaryMatrix{
 
     void setMatrix(boolean[][] matrix);
 
-    boolean containsFootnotes();
+    boolean containsFootnotes(String path);
 
     int[] getBlackPixelsPerLine(boolean[][] matrix);
 
-    int getFootnotesBeginningLine();
+    Integer getFootnotesBeginningLine(String path);
 
 }

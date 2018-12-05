@@ -1,28 +1,18 @@
-package com.uaic.ai.model;
+package com.uaic.ai.dto;
+
+import com.uaic.ai.model.Column;
+import com.uaic.ai.model.Footnote;
+import com.uaic.ai.model.Header;
+import com.uaic.ai.model.Statistics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class Image {
-	public boolean[][] pixels;
-	public ArrayList<Column> columns;
-	public Footnote footnote;
-	public Header header;
-	public Statistics statistics;
+public class ImageDto {
 
-	@Override
-	public String toString() {
-		return "Image [ columns=" + columns + "\n footnote=" + footnote
-				+ "\n header=" + header + "\n statistics=" + statistics + "]";
-	}
-
-    public boolean[][] getPixels() {
-        return pixels;
-    }
-
-    public void setPixels(boolean[][] pixels) {
-        this.pixels = pixels;
-    }
+    private ArrayList<Column> columns;
+    private Footnote footnote;
+    private Header header;
+    private Statistics statistics;
 
     public ArrayList<Column> getColumns() {
         return columns;
@@ -55,4 +45,5 @@ public class Image {
     public void setStatistics(Statistics statistics) {
         this.statistics = statistics;
     }
+
 }
