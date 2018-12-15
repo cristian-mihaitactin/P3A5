@@ -1,39 +1,14 @@
-
+import java.awt.Point;
 public class Footnote {
-
-	private int beginningX;
-	private int beginningY;
-	private int endingX;
-	private int endingY;
+	public Point topLeftCorner;
+	public Point topRightCorner;
+	public Point bottomLeftCorner;
+	public Point bottomRightCorner;
 	
-	
-	public int getBeginningX() {
-		return beginningX;
+	public Footnote(Point topLeftCorner, Point topRightCorner, Point bottomLeftCorner, Point bottomRightCorner) {
+		this.topLeftCorner = topLeftCorner;
+		this.topRightCorner = topRightCorner;
+		this.bottomLeftCorner = bottomLeftCorner;
+		this.bottomRightCorner = bottomRightCorner;
 	}
-
-	public int getBeginningY() {
-		return beginningY;
-	}
-
-	public int getEndingX() {
-		return endingX;
-	}
-
-	public int getEndingY() {
-		return endingY;
-	}
-
-	public Footnote()
-	{
-		
-	}
-	
-	public Footnote(int bX,int bY,int eX,int eY)
-	{
-		beginningX=bX;
-		beginningY=bY;
-		endingX=eX;
-		endingY=eY;
-	}
-	
 }

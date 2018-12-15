@@ -1,5 +1,5 @@
 
-public class ImageStatistics {
+public class Statistics {
 
 	public double blackPixelsPerLine, blackPixelsPerTextLine, blackPixelsPerEmptyLine,avgBlackPixelsPerLine,avgEmptyLinesBetweenTextsLines;
 	public int blackPixelCount;
@@ -8,7 +8,7 @@ public class ImageStatistics {
 	
     
     
-    public ImageStatistics()
+    public Statistics()
     {
     	
     }

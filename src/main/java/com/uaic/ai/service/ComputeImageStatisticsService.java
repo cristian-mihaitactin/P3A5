@@ -96,7 +96,7 @@ public class ComputeImageStatisticsService {
         
         
         
-        ImageStatistics statistics=new ImageStatistics();
+        Statistics statistics=new Statistics();
         statistics.blackPixelsPerLine=blackPixelsPerLine;
         statistics.blackPixelsPerTextLine=blackPixelsPerTextLine;
         statistics.blackPixelsPerEmptyLine=blackPixelsPerEmptyLine;
