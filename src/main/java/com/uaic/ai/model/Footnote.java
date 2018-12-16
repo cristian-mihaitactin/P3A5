@@ -1,4 +1,6 @@
+package com.uaic.ai.model;
 import java.awt.Point;
+
 public class Footnote {
 	public Point topLeftCorner;
 	public Point topRightCorner;

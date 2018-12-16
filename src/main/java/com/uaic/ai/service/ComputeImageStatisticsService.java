@@ -1,10 +1,13 @@
+package com.uaic.ai.service;
+
+import com.uaic.ai.model.Image;
+import com.uaic.ai.model.Statistics;
 import org.opencv.core.Core;
 
 public class ComputeImageStatisticsService {
 
-	
-	
-	private static int[] getBlackPixelsPerLine(boolean[][] matrix) {
+
+    private static int[] getBlackPixelsPerLine(boolean[][] matrix) {
         int[] blackPixelsInLine = new int[matrix.length];
         int blackPixelCount;
         for (int i = 0; i < matrix.length; i++) {
@@ -16,13 +19,12 @@ public class ComputeImageStatisticsService {
         }
         return blackPixelsInLine;
     }
-	
-	public static void compute(Image img)
-	{
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-		boolean [][]matrix=img.pixels;
-        
+    public static void compute(Image img) {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        boolean[][] matrix = img.pixels;
+
         double blackPixelsPerLine = 0, blackPixelsPerTextLine = 0, blackPixelsPerEmptyLine = 0;
         int blackPixelCount = 0, emptyLines = 0;
         int[] blackPixelsInLine = new int[matrix.length];
@@ -51,7 +53,6 @@ public class ComputeImageStatisticsService {
             }
         }
 
-//        blackPixelsPerTextLine = blackPixelsPerTextLine / textLines;
         blackPixelsPerEmptyLine = blackPixelsPerEmptyLine / emptyLines;
 
 
@@ -92,21 +93,19 @@ public class ComputeImageStatisticsService {
             }
         }
         avgEmptyLinesBetweenTextsLines = inferiorLimit / emptySpacesCount;
-        
-        
-        
-        
-        Statistics statistics=new Statistics();
-        statistics.blackPixelsPerLine=blackPixelsPerLine;
-        statistics.blackPixelsPerTextLine=blackPixelsPerTextLine;
-        statistics.blackPixelsPerEmptyLine=blackPixelsPerEmptyLine;
-        statistics.avgBlackPixelsPerLine=avgBlackPixelsPerLine;
-        statistics.avgEmptyLinesBetweenTextsLines=avgEmptyLinesBetweenTextsLines;
-        statistics.blackPixelCount=blackPixelCount;
-        statistics.blackPixelsInLine=blackPixelsInLine;
-        statistics.lineIsText=lineIsText;
-        
-        img.statistics= statistics;
-	}
-    
+
+
+        Statistics statistics = new Statistics();
+        statistics.blackPixelsPerLine = blackPixelsPerLine;
+        statistics.blackPixelsPerTextLine = blackPixelsPerTextLine;
+        statistics.blackPixelsPerEmptyLine = blackPixelsPerEmptyLine;
+        statistics.avgBlackPixelsPerLine = avgBlackPixelsPerLine;
+        statistics.avgEmptyLinesBetweenTextsLines = avgEmptyLinesBetweenTextsLines;
+        statistics.blackPixelCount = blackPixelCount;
+        statistics.blackPixelsInLine = blackPixelsInLine;
+        statistics.lineIsText = lineIsText;
+
+        img.statistics = statistics;
+    }
+
 }
