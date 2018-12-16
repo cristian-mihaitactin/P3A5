@@ -6,7 +6,7 @@ public class Footnote {
 	public Point topRightCorner;
 	public Point bottomLeftCorner;
 	public Point bottomRightCorner;
-	
+
 	public Footnote(Point topLeftCorner, Point topRightCorner, Point bottomLeftCorner, Point bottomRightCorner) {
 		this.topLeftCorner = topLeftCorner;
 		this.topRightCorner = topRightCorner;

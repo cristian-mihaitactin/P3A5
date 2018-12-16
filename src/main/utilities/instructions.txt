@@ -22,3 +22,10 @@ OpenCV:
 
     - to make sure it works, run main() from class Application ( in src\main\java\com.uaic.ai\ ) AFTER changing
     the path to "sample.jpg" to absolute path ( ex: D:\facultate\InteligentaArtificiala\P3A5\src\main\resources\sample.jpg )
+
+
+
+ImageMagick
+	Download ImageMagick from here  https://imagemagick.org/download/binaries/ImageMagick-7.0.8-14-Q16-x64-dll.exe
+	When installing be sure to check "Install legacy utilities"
+	That should be it
