@@ -1,11 +1,16 @@
 package com.uaic.ai.model;
-
 public class Statistics {
 
-    /**
-     * TODO: add image properties for identifying columns, footnotes , header, text details, percentages,
-     *
-      */
+	public double blackPixelsPerLine, blackPixelsPerTextLine, blackPixelsPerEmptyLine,avgBlackPixelsPerLine,avgEmptyLinesBetweenTextsLines;
+	public int blackPixelCount;
+	public int[] blackPixelsInLine;
+	public boolean lineIsText[];
 
+
+
+    public Statistics()
+    {
+
+    }
 
 }
