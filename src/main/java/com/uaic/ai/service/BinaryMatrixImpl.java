@@ -3,7 +3,9 @@ package com.uaic.ai.service;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BinaryMatrixImpl implements BinaryMatrix {
 
     private boolean[][] matrix;
@@ -11,6 +13,7 @@ public class BinaryMatrixImpl implements BinaryMatrix {
     public BinaryMatrixImpl() {
     }
 
+    @Override
     public void createMatrix(String path) {
         Mat pixelMatrix = Imgcodecs.imread(path);
         byte[] data = new byte[3];
@@ -55,20 +58,23 @@ public class BinaryMatrixImpl implements BinaryMatrix {
 
     }
 
+    @Override
     public boolean[][] getMatrix() {
         return matrix;
     }
 
+    @Override
     public void setMatrix(boolean[][] matrix) {
         this.matrix = matrix;
     }
 
-    public boolean containsFootnotes() {
-        return getFootnotesBeginningLine() != -1;
+    @Override
+    public boolean containsFootnotes(String path) {
+        return getFootnotesBeginningLine(path) != -1;
     }
 
-
-    private int[] getBlackPixelsPerLine(boolean[][] matrix) {
+    @Override
+    public int[] getBlackPixelsPerLine(boolean[][] matrix) {
         int[] blackPixelsInLine = new int[matrix.length];
         int blackPixelCount;
         for (int i = 0; i < matrix.length; i++) {
@@ -81,14 +87,14 @@ public class BinaryMatrixImpl implements BinaryMatrix {
         return blackPixelsInLine;
     }
 
-
-    public int getFootnotesBeginningLine() {
+    @Override
+    public Integer getFootnotesBeginningLine(String path) {
 
         //TODO: remove this when refactor code, should be only in Application
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
 
-        createMatrix("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\page-with-footnote-3.jpg");
+        createMatrix(path);
         double blackPixelsPerLine = 0, blackPixelsPerTextLine = 0, blackPixelsPerEmptyLine = 0;
         int blackPixelCount = 0, textLines = 0, emptyLines = 0;
         int[] blackPixelsInLine = new int[matrix.length];
