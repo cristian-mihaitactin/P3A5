@@ -1,7 +1,6 @@
 package com.uaic.ai;
 
 import com.uaic.ai.model.Image;
-import com.uaic.ai.service.BinaryMatrixImpl;
 import com.uaic.ai.service.ColumnsRecognitionImpl;
 import org.opencv.core.Core;
 import org.springframework.boot.SpringApplication;

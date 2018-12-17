@@ -2,13 +2,15 @@ package com.uaic.ai.service;
 
 import com.uaic.ai.model.Footnote;
 import com.uaic.ai.model.Image;
+import org.springframework.stereotype.Service;
 
 import java.awt.Point;
 
-public class GetFootnotesPositionService {
+@Service
+public class FootnotesServiceImpl implements FootnotesService {
 
 
-    public static int getFootnotesBeginningLine(Image img) {
+    private int getFootnotesBeginningLine(Image img) {
         int emptyLines = 0;
         boolean[] lineIsText = img.statistics.lineIsText;
 
@@ -28,14 +30,17 @@ public class GetFootnotesPositionService {
         return -1;
     }
 
-    public static void getFootnotesCoordinates(Image img) {
+    @Override
+    public Footnote getFootnotesCoordinates(Image img) {
         int x1 = getFootnotesBeginningLine(img);
         int x2 = x1;
         int y1 = -1, y2 = -1;
         int verticalSum = 0;
         double averageBlackPixelsInVerticalLine = 0;
+
+
         if (x1 == -1)
-            return;
+            return new Footnote(new Point(-1, 0), new Point(-1, 0), new Point(0, 0), new Point(0, 0));
         for (int i = img.statistics.lineIsText.length - 1; i > x1; i--)
             if (img.statistics.lineIsText[i]) {
                 x2 = i;
@@ -76,10 +81,10 @@ public class GetFootnotesPositionService {
         }
 
         if (y1 < 0)
-            return;
+            return new Footnote(new Point(0, -1), new Point(0, 0), new Point(0, -1), new Point(0, 0));
 
-        img.footnote = new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
-
+//      img.footnote = new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
+        return new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
     }
 
 }

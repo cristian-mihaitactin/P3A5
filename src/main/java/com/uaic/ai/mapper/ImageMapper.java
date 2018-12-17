@@ -9,6 +9,7 @@ public class ImageMapper {
 
     public ImageDto map(Image image) {
         ImageDto imageDto = new ImageDto();
+
         imageDto.setColumns(image.getColumns());
         imageDto.setFootnote(image.getFootnote());
         imageDto.setHeader(image.getHeader());

@@ -2,9 +2,9 @@ package com.uaic.ai.controller;
 
 import com.uaic.ai.dto.ImageDto;
 import com.uaic.ai.mapper.ImageMapper;
+import com.uaic.ai.model.Footnote;
 import com.uaic.ai.model.Image;
-import com.uaic.ai.service.BinaryMatrix;
-import com.uaic.ai.service.ColumnsRecognition;
+import com.uaic.ai.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +18,23 @@ import java.nio.file.*;
 public class SegmentationController {
 
     private static final Path STORAGE_LOCATION = Paths.get("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\downloads");
-    private BinaryMatrix binaryMatrixService;
     private ColumnsRecognition columnsRecognitionService;
     private ImageMapper imageMapper;
+    private ImageServiceImpl imageServiceImpl;
+    private StatisticsServiceImpl statisticsService;
+    private FootnotesServiceImpl footnotesPositionService;
 
     @Autowired
-    public SegmentationController(BinaryMatrix binaryMatrixService, ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper) {
-        this.binaryMatrixService = binaryMatrixService;
+    public SegmentationController(ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper, ImageServiceImpl imageServiceImpl,
+                                  StatisticsServiceImpl statisticsService, FootnotesServiceImpl footnotesPositionService) {
         this.columnsRecognitionService = columnsRecognitionService;
         this.imageMapper = imageMapper;
+        this.imageServiceImpl = imageServiceImpl;
+        this.statisticsService = statisticsService;
+        this.footnotesPositionService = footnotesPositionService;
 
     }
+
 
     @PostMapping("/get-cols")
     public ImageDto getColumns(@RequestPart("image") MultipartFile image) {
@@ -39,17 +45,72 @@ public class SegmentationController {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
             String imagePath = STORAGE_LOCATION + "\\" + fileName;
 
-            // we need to do these 2 lines of code in order to use  columnsRecognitionService.computeColumns(imageResult);
-            // TODO: modify createMatrix to return value of createMatrix(imagePath) in Image imageResult
+            /*
             binaryMatrixService.createMatrix(imagePath);
             imageResult.setPixels(binaryMatrixService.getMatrix());
+            */
 
+            //create binary array in Image Object
+            imageResult = imageServiceImpl.processImage(imagePath);
+
+            //create statistics for image, using the binary array
+            imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
+
+            //create and set Column Object, using statistics
             columnsRecognitionService.computeColumns(imageResult);
+
+
             return imageMapper.map(imageResult);
         }
 
         return null;
     }
+
+
+    @PostMapping("/get-footnotes")
+    public ImageDto getColumns2(@RequestPart("image") MultipartFile image) {
+
+        Image imageResult = new Image();
+
+        if (uploadImage(image)) {
+            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+            String imagePath = STORAGE_LOCATION + "\\" + fileName;
+
+            //create binary array in Image Object
+            imageResult = imageServiceImpl.processImage(imagePath);
+
+            //create statistics for image, using the binary array
+            imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
+
+            //create Footnote Object, using statistics
+            Footnote footnotes = footnotesPositionService.getFootnotesCoordinates(imageResult);
+            imageResult.setFootnote(footnotes);
+
+
+            return imageMapper.map(imageResult);
+        }
+
+        return imageMapper.map(null);
+    }
+
+
+//    @PostMapping
+//    public ImageDto getFootnotes(@RequestPart("image") MultipartFile image) {
+//
+//        Image imageResult = new Image();
+//
+//        if(uploadImage(image)) {
+//            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+//            String imagePath = STORAGE_LOCATION + "\\" + fileName;
+//
+//            binaryMatrixService.createMatrix(imagePath);
+//            imageResult.setPixels(binaryMatrixService.getMatrix());
+//
+//
+//        }
+//
+//
+//    }
 
 
     /**

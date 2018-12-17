@@ -3,11 +3,13 @@ package com.uaic.ai.service;
 import com.uaic.ai.model.Image;
 import com.uaic.ai.model.Statistics;
 import org.opencv.core.Core;
+import org.springframework.stereotype.Service;
 
-public class ComputeImageStatisticsService {
+@Service
+public class StatisticsServiceImpl implements StatisticsService{
 
 
-    private static int[] getBlackPixelsPerLine(boolean[][] matrix) {
+    private int[] getBlackPixelsPerLine(boolean[][] matrix) {
         int[] blackPixelsInLine = new int[matrix.length];
         int blackPixelCount;
         for (int i = 0; i < matrix.length; i++) {
@@ -20,7 +22,8 @@ public class ComputeImageStatisticsService {
         return blackPixelsInLine;
     }
 
-    public static void compute(Image img) {
+    @Override
+    public Statistics computeStatistics(Image img) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         boolean[][] matrix = img.pixels;
@@ -105,7 +108,8 @@ public class ComputeImageStatisticsService {
         statistics.blackPixelsInLine = blackPixelsInLine;
         statistics.lineIsText = lineIsText;
 
-        img.statistics = statistics;
+        //img.statistics = statistics;
+        return statistics;
     }
 
 }
