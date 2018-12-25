@@ -7,17 +7,7 @@ import java.util.ArrayList;
 
 public interface ColumnsRecognition {
 
-    boolean isGoodSelection(int i, ArrayList<Integer> selection);
-
-    ArrayList<Double> getVerticalBlackness(boolean[][] pixels);
-
-    ArrayList<Double> getHorizontalBlackness(boolean[][] pixels);
-
-    void thickenDelimitation(ArrayList<Integer> columnsDelimitation);
-
-    ArrayList<Integer> normalizeDelimitation(ArrayList<Integer> delimitation);
-
-    ArrayList<Integer> getDelimitation(ArrayList<Double> blackness);
+    ArrayList<Integer> getDelimitation(ArrayList<Double> blackness, double sensitivity);
 
     void verticallyCorrectColumn(Image image, Column column);
 

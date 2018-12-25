@@ -5,6 +5,8 @@ import com.uaic.ai.mapper.ImageMapper;
 import com.uaic.ai.model.Image;
 import com.uaic.ai.service.BinaryMatrix;
 import com.uaic.ai.service.ColumnsRecognition;
+import com.uaic.ai.service.ImageProcessing;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +19,18 @@ import java.nio.file.*;
 @RequestMapping("/segmentation")
 public class SegmentationController {
 
-    private static final Path STORAGE_LOCATION = Paths.get("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\downloads");
+    private static final Path STORAGE_LOCATION = Paths.get("C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources");
     private BinaryMatrix binaryMatrixService;
     private ColumnsRecognition columnsRecognitionService;
+    private ImageProcessing imageProcessingService;
     private ImageMapper imageMapper;
 
     @Autowired
-    public SegmentationController(BinaryMatrix binaryMatrixService, ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper) {
+    public SegmentationController(BinaryMatrix binaryMatrixService, ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper, ImageProcessing imageProcessingService) {
         this.binaryMatrixService = binaryMatrixService;
         this.columnsRecognitionService = columnsRecognitionService;
         this.imageMapper = imageMapper;
+        this.imageProcessingService = imageProcessingService;
 
     }
 
@@ -38,13 +42,22 @@ public class SegmentationController {
         if (uploadImage(image)) {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
             String imagePath = STORAGE_LOCATION + "\\" + fileName;
+            String clearedImagePath = STORAGE_LOCATION + "\\cleaned_" + fileName;
+                       
+            //To be sent back to the client
+            String clientImagePath = STORAGE_LOCATION + "\\client_" + fileName;
+            
+            imageProcessingService.correctImage(imagePath, clientImagePath, clearedImagePath);
+            
 
             // we need to do these 2 lines of code in order to use  columnsRecognitionService.computeColumns(imageResult);
             // TODO: modify createMatrix to return value of createMatrix(imagePath) in Image imageResult
-            binaryMatrixService.createMatrix(imagePath);
+            binaryMatrixService.createMatrix(clearedImagePath);
             imageResult.setPixels(binaryMatrixService.getMatrix());
 
             columnsRecognitionService.computeColumns(imageResult);
+            columnsRecognitionService.computeLinesOfColumns(imageResult);
+            System.out.println(imageResult);
             return imageMapper.map(imageResult);
         }
 
