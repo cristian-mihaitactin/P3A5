@@ -5,11 +5,17 @@ import com.uaic.ai.mapper.ImageMapper;
 import com.uaic.ai.model.Footnote;
 import com.uaic.ai.model.Image;
 import com.uaic.ai.service.*;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 
@@ -20,23 +26,23 @@ public class SegmentationController {
     private static final Path STORAGE_LOCATION = Paths.get("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\downloads");
     private ColumnsRecognition columnsRecognitionService;
     private ImageMapper imageMapper;
-    private ImageServiceImpl imageServiceImpl;
-    private StatisticsServiceImpl statisticsService;
-    private FootnotesServiceImpl footnotesPositionService;
+    private ImageService imageService;
+    private StatisticsService statisticsService;
+    private FootnotesService footnotesService;
 
     @Autowired
-    public SegmentationController(ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper, ImageServiceImpl imageServiceImpl,
-                                  StatisticsServiceImpl statisticsService, FootnotesServiceImpl footnotesPositionService) {
+    public SegmentationController(ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper, ImageService imageService,
+                                  StatisticsService statisticsService, FootnotesServiceImpl footnotesService) {
         this.columnsRecognitionService = columnsRecognitionService;
         this.imageMapper = imageMapper;
-        this.imageServiceImpl = imageServiceImpl;
+        this.imageService = imageService;
         this.statisticsService = statisticsService;
-        this.footnotesPositionService = footnotesPositionService;
+        this.footnotesService = footnotesService;
 
     }
 
 
-    @PostMapping("/get-cols")
+    @PostMapping(value = "/get-cols", produces = "application/json")
     public ImageDto getColumns(@RequestPart("image") MultipartFile image) {
 
         Image imageResult = new Image();
@@ -51,7 +57,7 @@ public class SegmentationController {
             */
 
             //create binary array in Image Object
-            imageResult = imageServiceImpl.processImage(imagePath);
+            imageResult = imageService.processImage(imagePath);
 
             //create statistics for image, using the binary array
             imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
@@ -63,12 +69,12 @@ public class SegmentationController {
             return imageMapper.map(imageResult);
         }
 
-        return null;
+        return imageMapper.map(null);
     }
 
 
-    @PostMapping("/get-footnotes")
-    public ImageDto getColumns2(@RequestPart("image") MultipartFile image) {
+    @PostMapping(value = "/get-footnotes", produces = "application/json")
+    public ImageDto getFootnotes(@RequestPart("image") MultipartFile image) {
 
         Image imageResult = new Image();
 
@@ -77,13 +83,13 @@ public class SegmentationController {
             String imagePath = STORAGE_LOCATION + "\\" + fileName;
 
             //create binary array in Image Object
-            imageResult = imageServiceImpl.processImage(imagePath);
+            imageResult = imageService.processImage(imagePath);
 
             //create statistics for image, using the binary array
             imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
 
             //create Footnote Object, using statistics
-            Footnote footnotes = footnotesPositionService.getFootnotesCoordinates(imageResult);
+            Footnote footnotes = footnotesService.getFootnotesCoordinates(imageResult);
             imageResult.setFootnote(footnotes);
 
 
@@ -94,23 +100,79 @@ public class SegmentationController {
     }
 
 
-//    @PostMapping
-//    public ImageDto getFootnotes(@RequestPart("image") MultipartFile image) {
-//
-//        Image imageResult = new Image();
-//
-//        if(uploadImage(image)) {
-//            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-//            String imagePath = STORAGE_LOCATION + "\\" + fileName;
-//
-//            binaryMatrixService.createMatrix(imagePath);
-//            imageResult.setPixels(binaryMatrixService.getMatrix());
-//
-//
-//        }
-//
-//
-//    }
+    @PostMapping(value = "/get-stats", produces = "application/json")
+    public ImageDto getStatistics(@RequestPart("image") MultipartFile image) {
+
+        Image imageResult = new Image();
+
+        if (uploadImage(image)) {
+            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+            String imagePath = STORAGE_LOCATION + "\\" + fileName;
+
+            //create binary array in Image Object
+            imageResult = imageService.processImage(imagePath);
+
+            //create statistics for image, using the binary array
+            imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
+
+            return imageMapper.map(imageResult);
+        }
+
+        return imageMapper.map(null);
+    }
+
+    @GetMapping(value = "/get-image-base64")
+    public String sendBase64Image() {
+
+        String encodedfile = null;
+        try {
+
+            File file = new File("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\downloads\\page-with-footnote-3.jpg");
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+
+            byte[] bytes = new byte[(int)file.length()];
+            fileInputStreamReader.read(bytes);
+
+            //encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
+            encodedfile = Base64.encodeBase64String(bytes);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return encodedfile;
+
+    }
+
+    @GetMapping(value = "/get-image-bytes")
+    public byte[] sendBytesFromBase64Image() {
+
+        String encodedfile = null;
+        try {
+
+            File file = new File("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\downloads\\page-with-footnote-3.jpg");
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+
+            byte[] bytes = new byte[(int)file.length()];
+            fileInputStreamReader.read(bytes);
+
+            encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
+            encodedfile = Base64.encodeBase64String(bytes);
+            return Base64.decodeBase64(bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+
+    }
+
+
+
 
 
     /**
