@@ -2,6 +2,9 @@ package com.uaic.ai;
 
 import com.uaic.ai.model.Image;
 import com.uaic.ai.service.ColumnsRecognitionImpl;
+import com.uaic.ai.service.ImageProcessing;
+import com.uaic.ai.service.ImageProcessingImpl;
+
 import org.opencv.core.Core;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,22 +19,22 @@ public class Application {
 
 		SpringApplication.run(Application.class);
 
-		/*
-
+		
+/*
 		//The outPath is the output of the text cleaning command
 		ColumnsRecognitionImpl columnsRecognitionImpl = new ColumnsRecognitionImpl();
-		String inPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\anotherSample.png";
-		String outPath = "C:\\Users\\gabri\\Desktop\\Git 2\\P3A5\\src\\main\\resources\\output.jpg";
-		String[] command = { "magick", "convert", "-lat", "20x20-10%", inPath, outPath };
-		try {
-			Process process = Runtime.getRuntime().exec(command);
-			process.waitFor();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
+		//Path of the original image (from the client)
+		String inPath = "C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources\\tilted3.jpg";
 		
+		//Path of the alligned image, is not cleared, this file will be returned to the front-end
+		String allignedImagePath = "C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources\\clientImage.jpg";
+		
+		//Path of the output, alligned and cleaned, we will work on this file
+		String outPath = "C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources\\output.jpg";
+		ImageProcessing imageProcessing = new ImageProcessingImpl();
+
+		imageProcessing.correctImage(inPath,allignedImagePath,outPath);
 		Image image = new Image();
 		
 		//this needs to be changed
@@ -66,9 +69,8 @@ public class Application {
 		// Imgcodecs.imwrite("D:\\Andy\\an3\\InteligentaArtificiala_IA\\images\\Screenshot_5-XX.png",
 		// img1);
 		//
-
-
-		*/
+*/
+		
 
 	}
 
