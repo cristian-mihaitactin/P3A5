@@ -9,6 +9,7 @@ public class Image {
 	public Footnote footnote;
 	public Header header;
 	public Statistics statistics;
+	public String clientImage;
 
 	@Override
 	public String toString() {
@@ -55,4 +56,14 @@ public class Image {
     public void setStatistics(Statistics statistics) {
         this.statistics = statistics;
     }
+
+	public String getClientImage() {
+		return clientImage;
+	}
+
+	public void setClientImage(String clientImage) {
+		this.clientImage = clientImage;
+	}
+    
+    
 }

@@ -23,7 +23,7 @@ public class StatisticsServiceImpl implements StatisticsService{
     }
 
     @Override
-    public Statistics computeStatistics(Image img) {
+    public void computeStatistics(Image img) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         boolean[][] matrix = img.pixels;
@@ -108,8 +108,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         statistics.blackPixelsInLine = blackPixelsInLine;
         statistics.lineIsText = lineIsText;
 
-        //img.statistics = statistics;
-        return statistics;
+        img.statistics = statistics;
     }
 
 }

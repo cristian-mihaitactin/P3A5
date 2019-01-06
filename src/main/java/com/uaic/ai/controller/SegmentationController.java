@@ -23,7 +23,7 @@ import java.nio.file.*;
 @RequestMapping("/segmentation")
 public class SegmentationController {
 
-    private static final Path STORAGE_LOCATION = Paths.get("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources\\downloads");
+    private static final Path STORAGE_LOCATION = Paths.get("C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources");
     private ColumnsRecognition columnsRecognitionService;
     private ImageMapper imageMapper;
     private ImageService imageService;
@@ -38,10 +38,40 @@ public class SegmentationController {
         this.imageService = imageService;
         this.statisticsService = statisticsService;
         this.footnotesService = footnotesService;
-
     }
 
+    @PostMapping(value = "", produces = "application/json")
+    public ImageDto getAll(@RequestPart("image") MultipartFile image) {
 
+        Image imageResult = new Image();
+
+        if (uploadImage(image)) {
+            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+            String inputPath = STORAGE_LOCATION + "\\" + fileName;
+            String clientPath = STORAGE_LOCATION + "\\client_" + fileName;
+            String outputPath = STORAGE_LOCATION + "\\output_" + fileName;
+
+            imageService.correctImage(inputPath, clientPath, outputPath);
+            
+            imageResult = imageService.processImage(outputPath);
+            
+            setClientImage(imageResult,clientPath);
+
+            statisticsService.computeStatistics(imageResult);
+            
+            footnotesService.computeFootnotes(imageResult);
+
+            columnsRecognitionService.computeColumns(imageResult);
+            
+            columnsRecognitionService.computeLinesOfColumns(imageResult);
+
+
+            return imageMapper.map(imageResult);
+        }
+
+        return imageMapper.map(null);
+    }
+    
     @PostMapping(value = "/get-cols", produces = "application/json")
     public ImageDto getColumns(@RequestPart("image") MultipartFile image) {
 
@@ -49,18 +79,18 @@ public class SegmentationController {
 
         if (uploadImage(image)) {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-            String imagePath = STORAGE_LOCATION + "\\" + fileName;
+            String inputPath = STORAGE_LOCATION + "\\" + fileName;
+            String clientPath = STORAGE_LOCATION + "\\client_" + fileName;
+            String outputPath = STORAGE_LOCATION + "\\output_" + fileName;
 
-            /*
-            binaryMatrixService.createMatrix(imagePath);
-            imageResult.setPixels(binaryMatrixService.getMatrix());
-            */
-
-            //create binary array in Image Object
-            imageResult = imageService.processImage(imagePath);
+            imageService.correctImage(inputPath, clientPath, outputPath);
+            
+            imageResult = imageService.processImage(outputPath);
 
             //create statistics for image, using the binary array
-            imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
+            statisticsService.computeStatistics(imageResult);
+            
+            footnotesService.computeFootnotes(imageResult);
 
             //create and set Column Object, using statistics
             columnsRecognitionService.computeColumns(imageResult);
@@ -86,11 +116,10 @@ public class SegmentationController {
             imageResult = imageService.processImage(imagePath);
 
             //create statistics for image, using the binary array
-            imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
+            statisticsService.computeStatistics(imageResult);
 
             //create Footnote Object, using statistics
-            Footnote footnotes = footnotesService.getFootnotesCoordinates(imageResult);
-            imageResult.setFootnote(footnotes);
+            footnotesService.computeFootnotes(imageResult);
 
 
             return imageMapper.map(imageResult);
@@ -113,7 +142,7 @@ public class SegmentationController {
             imageResult = imageService.processImage(imagePath);
 
             //create statistics for image, using the binary array
-            imageResult.setStatistics(statisticsService.computeStatistics(imageResult));
+            statisticsService.computeStatistics(imageResult);
 
             return imageMapper.map(imageResult);
         }
@@ -197,6 +226,23 @@ public class SegmentationController {
         }
         return false;
 
+    }
+
+    private void setClientImage(Image image, String path) {
+        try {
+
+            File file = new File(path);
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+
+            byte[] bytes = new byte[(int)file.length()];
+            fileInputStreamReader.read(bytes);
+            
+            fileInputStreamReader.close();
+
+            image.clientImage = Base64.encodeBase64String(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

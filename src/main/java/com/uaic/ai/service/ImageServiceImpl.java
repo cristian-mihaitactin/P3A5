@@ -6,10 +6,73 @@ import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.validation.constraints.NotNull;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+	
+    
+	SimpleOperations simpleOperations;
+	ColumnsRecognition columnsRecognition;
+
+	public ImageServiceImpl() {
+		this.simpleOperations = new SimpleOperationsImpl();
+		this.columnsRecognition = new ColumnsRecognitionImpl();
+	}
+
+
+	@Override
+	public void correctImage(String inPath, String allignedImagePath, String outPath) {
+		int upperLimit = 32;
+		int lowerLimit = -32;
+		int currentLimit = 0;
+		clearImage(inPath, outPath);
+		HashMap<Integer, Integer> scores = new HashMap<Integer, Integer>();
+		int leftScore;
+		int rightScore;
+
+		while (true) {
+			if (upperLimit - lowerLimit <= 1)
+			{
+				currentLimit = Integer.compare(scores.get(upperLimit), scores.get(lowerLimit)) < 0 ? upperLimit : lowerLimit;
+				break;
+			}
+			int leftTest = (lowerLimit + currentLimit) / 2;
+			int rightTest = (upperLimit + currentLimit) / 2;
+
+			if (scores.containsKey(leftTest))
+				leftScore = scores.get(leftTest);
+			else {
+				rotateImage(outPath, allignedImagePath, leftTest);
+				leftScore = getScore(processImage(allignedImagePath).pixels);
+				scores.put(leftTest, leftScore);
+			}
+
+			if (scores.containsKey(rightTest))
+				rightScore = scores.get(rightTest);
+			else {
+				rotateImage(outPath, allignedImagePath, rightTest);
+				rightScore = getScore(processImage(allignedImagePath).pixels);
+				scores.put(rightTest, rightScore);
+			}
+			
+			if (leftScore < rightScore) {
+				upperLimit = currentLimit;
+				currentLimit = leftTest;
+			} else {
+				lowerLimit = currentLimit;
+				currentLimit = rightTest;
+			}
+
+		}
+
+		rotateImage(outPath, outPath, currentLimit);
+		rotateImage(inPath, allignedImagePath, currentLimit);
+
+	}
 
     @Override
     public Image processImage(byte[] bytes) {
@@ -87,5 +150,42 @@ public class ImageServiceImpl implements ImageService {
 //      img.pixels = matrix;
         return matrix;
     }
+    
+	private void clearImage(String inPath, String outPath) {
+		String[] command = { "magick", "convert", "-lat", "20x20-8%", inPath, outPath };
+		try {
+			Process process = Runtime.getRuntime().exec(command);
+			process.waitFor();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
+	private void rotateImage(String inPath, String outPath, Integer degrees) {
+		String[] command = { "magick", "convert", "-rotate", degrees.toString(), inPath, outPath };
+		try {
+			Process process = Runtime.getRuntime().exec(command);
+			process.waitFor();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private int getScore(boolean pixels[][]) {	
+		ArrayList<Integer> vertical = columnsRecognition.getDelimitation(simpleOperations.getVerticalBlackness(pixels), 4);
+		ArrayList<Integer> horizontal = columnsRecognition.getDelimitation(simpleOperations.getHorizontalBlackness(pixels), 4);
+		int result = 0;
+		
+		for(Integer i : vertical)
+			if(i == 0)
+				result++;
+		
+		for(Integer i : horizontal)
+			if(i == 0)
+				result++;
+	
+		return result;
+	}
 }

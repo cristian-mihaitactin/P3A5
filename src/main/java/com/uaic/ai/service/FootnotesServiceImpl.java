@@ -31,7 +31,7 @@ public class FootnotesServiceImpl implements FootnotesService {
     }
 
     @Override
-    public Footnote getFootnotesCoordinates(Image img) {
+    public void computeFootnotes(Image img) {
         int x1 = getFootnotesBeginningLine(img);
         int x2 = x1;
         int y1 = -1, y2 = -1;
@@ -39,8 +39,11 @@ public class FootnotesServiceImpl implements FootnotesService {
         double averageBlackPixelsInVerticalLine = 0;
 
 
-        if (x1 == -1)
-            return new Footnote(new Point(-1, 0), new Point(-1, 0), new Point(0, 0), new Point(0, 0));
+        if (x1 == -1) {
+        	img.footnote = null;
+        	return;
+        }
+        
         for (int i = img.statistics.lineIsText.length - 1; i > x1; i--)
             if (img.statistics.lineIsText[i]) {
                 x2 = i;
@@ -80,11 +83,12 @@ public class FootnotesServiceImpl implements FootnotesService {
             }
         }
 
-        if (y1 < 0)
-            return new Footnote(new Point(0, -1), new Point(0, 0), new Point(0, -1), new Point(0, 0));
-
-//      img.footnote = new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
-        return new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
+        if (y1 < 0) {
+        	img.footnote = null;
+        	return;
+        }
+            
+        img.footnote = new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
     }
 
 }
