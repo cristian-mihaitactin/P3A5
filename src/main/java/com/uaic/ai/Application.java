@@ -2,9 +2,6 @@ package com.uaic.ai;
 
 import com.uaic.ai.model.Image;
 import com.uaic.ai.service.ColumnsRecognitionImpl;
-import com.uaic.ai.service.ImageProcessing;
-import com.uaic.ai.service.ImageProcessingImpl;
-
 import org.opencv.core.Core;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

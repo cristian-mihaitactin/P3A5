@@ -13,7 +13,7 @@ public class ImageMapper {
         imageDto.setColumns(image.getColumns());
         imageDto.setFootnote(image.getFootnote());
         imageDto.setHeader(image.getHeader());
-        imageDto.setStatistics(image.getStatistics());
+        imageDto.setClientImage(image.getClientImage());
         return imageDto;
     }
 

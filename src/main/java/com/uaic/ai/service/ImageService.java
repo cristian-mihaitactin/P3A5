@@ -9,5 +9,7 @@ public interface ImageService {
     Image processImage(byte[] bytes);
 
     Image processImage(String path);
+    
+	void correctImage(String path,String allignedImagePath, String outPath);
 
 }

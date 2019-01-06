@@ -5,6 +5,6 @@ import com.uaic.ai.model.Image;
 
 public interface FootnotesService {
 
-    Footnote getFootnotesCoordinates(Image img);
+   void computeFootnotes(Image img);
 
 }

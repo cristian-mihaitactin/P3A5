@@ -19,7 +19,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 	SimpleOperations simpleOperations;
-	
+
 	public ColumnsRecognitionImpl() {
 		this.simpleOperations = new SimpleOperationsImpl();
 	}
@@ -27,7 +27,8 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 	private boolean isGoodSelection(int i, ArrayList<Integer> selection) {
 		if (i > 1 && (selection.get(i - 2).equals(selection.get(i)) && selection.get(i - 1).equals(selection.get(i))))
 			return true;
-		if (i < selection.size() - 2 && (selection.get(i + 2).equals(selection.get(i)) && selection.get(i + 1).equals(selection.get(i))))
+		if (i < selection.size() - 2
+				&& (selection.get(i + 2).equals(selection.get(i)) && selection.get(i + 1).equals(selection.get(i))))
 			return true;
 
 		return false;
@@ -84,7 +85,17 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return delimitation;
 	}
 
-    @Override
+	private void filterColumns(Image image) {
+		for (int i = image.columns.size() - 1; i >= 0; i--) {
+			float width = image.columns.get(i).topRightCorner.x - image.columns.get(i).topLeftCorner.x;
+			if (width * 10 < image.pixels[0].length) {
+				image.columns.remove(i);
+			}
+		}
+
+	}
+
+	@Override
 	public ArrayList<Integer> getDelimitation(ArrayList<Double> blackness, double sensitivity) {
 		double averageBlackness = 0d;
 
@@ -94,7 +105,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 
 		averageBlackness /= blackness.size();
 
-		double contrastOffset = (1 - averageBlackness) - (1 - averageBlackness)/sensitivity;
+		double contrastOffset = (1 - averageBlackness) - (1 - averageBlackness) / sensitivity;
 
 		ArrayList<Integer> delimitation = new ArrayList<Integer>();
 
@@ -105,13 +116,13 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return normalizeDelimitation(delimitation);
 	}
 
-    @Override
+	@Override
 	public void verticallyCorrectColumn(Image image, Column column) {
-		boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, column.topLeftCorner,
-				column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
+		boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, column.topLeftCorner, column.topRightCorner,
+				column.bottomLeftCorner, column.bottomRightCorner);
 		ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
 
-		ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness,2);
+		ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 2);
 
 		int upperEmptySpace = 0;
 		int lowerEmptySpace = 0;
@@ -132,14 +143,14 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		column.bottomRightCorner.y = column.bottomRightCorner.y - lowerEmptySpace;
 	}
 
-    @Override
+	@Override
 	public void computeLinesOfColumns(Image image) {
 
 		for (Column column : image.columns) {
 			boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, column.topLeftCorner,
 					column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
 			ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
-			ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness,2);
+			ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 2);
 
 			int lineStart = 0;
 			int lastItem = 1;
@@ -159,7 +170,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		}
 	}
 
-    @Override
+	@Override
 	public void computeColumns(Image image) {
 		Point topLeftCorner;
 		Point topRightCorner;
@@ -188,7 +199,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 
 		ArrayList<Double> columnsBlackness = simpleOperations.getVerticalBlackness(pixels);
 
-		ArrayList<Integer> columnsDelimitation = getDelimitation(columnsBlackness,2);
+		ArrayList<Integer> columnsDelimitation = getDelimitation(columnsBlackness, 2);
 
 		int columnStart = 0;
 		int lastItem = 1;
@@ -207,7 +218,9 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		for (Column column : columns) {
 			verticallyCorrectColumn(image, column);
 		}
-
+		
 		image.columns = columns;
+		
+		filterColumns(image);
 	}
 }

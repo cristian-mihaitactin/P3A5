@@ -12,7 +12,7 @@ public class ImageDto {
     private ArrayList<Column> columns;
     private Footnote footnote;
     private Header header;
-    private Statistics statistics;
+    private String clientImage;
 
     public ArrayList<Column> getColumns() {
         return columns;
@@ -38,12 +38,12 @@ public class ImageDto {
         this.header = header;
     }
 
-    public Statistics getStatistics() {
-        return statistics;
+    public String getClientImage() {
+        return clientImage;
     }
 
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
+    public void setClientImage(String clientImage) {
+        this.clientImage = clientImage;
     }
 
 }

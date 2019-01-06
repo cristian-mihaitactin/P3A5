@@ -5,6 +5,6 @@ import com.uaic.ai.model.Statistics;
 
 public interface StatisticsService {
 
-    Statistics computeStatistics(Image img);
+    void computeStatistics(Image img);
 
 }
