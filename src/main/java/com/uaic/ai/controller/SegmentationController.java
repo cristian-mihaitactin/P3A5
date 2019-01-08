@@ -23,7 +23,7 @@ import java.nio.file.*;
 @RequestMapping("/segmentation")
 public class SegmentationController {
 
-    private static final Path STORAGE_LOCATION = Paths.get("C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources");
+    private static final Path STORAGE_LOCATION = Paths.get("D:\\Andy\\an3\\InteligentaArtificiala_IA\\P3A5\\src\\main\\resources");
     private ColumnsRecognition columnsRecognitionService;
     private ImageMapper imageMapper;
     private ImageService imageService;
@@ -199,8 +199,6 @@ public class SegmentationController {
 
 
     }
-
-
 
 
 
