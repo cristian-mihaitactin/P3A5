@@ -236,7 +236,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 					columnStart = i;
 				} else {
 					columns.add(new Column(new Point(columnStart, 0), new Point(i, 0),
-							new Point(columnStart, image.pixels.length), new Point(i, image.pixels.length)));
+							new Point(columnStart, image.footnote.topRightCorner.y), new Point(i,image.footnote.topRightCorner.y)));
 				}
 			}
 			lastItem = columnsDelimitation.get(i);
