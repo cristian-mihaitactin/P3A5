@@ -88,7 +88,7 @@ public class FootnotesServiceImpl implements FootnotesService {
         	return;
         }
             
-        img.footnote = new Footnote(new Point(x1, y1), new Point(x1, y2), new Point(x2, y1), new Point(x2, y2));
+        img.footnote = new Footnote(new Point(y1, x1), new Point(y1, x2), new Point(y2, x1), new Point(y2, x2));
     }
 
 }

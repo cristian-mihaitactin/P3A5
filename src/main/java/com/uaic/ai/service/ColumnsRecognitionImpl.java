@@ -5,6 +5,8 @@ import com.uaic.ai.model.Image;
 import com.uaic.ai.model.Line;
 import com.uaic.ai.model.Paragraph;
 import com.uaic.ai.model.Pixel;
+import com.uaic.ai.model.Word;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.springframework.stereotype.Service;
@@ -168,6 +170,32 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		line.bottomLeftCorner.x = line.bottomLeftCorner.x + startEmptySpace;
 		line.bottomRightCorner.x = line.bottomRightCorner.x - endEmptySpace;
 	}
+	
+	private void verticallyCorrectWord(Image image, Word word) {
+		boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, word.topLeftCorner, word.topRightCorner,
+				word.bottomLeftCorner, word.bottomRightCorner);
+		ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
+
+		ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 2);
+
+		int upperEmptySpace = 0;
+		int lowerEmptySpace = 0;
+		for (Integer i : delimitation) {
+			upperEmptySpace++;
+			if (i == 0)
+				break;
+		}
+		Collections.reverse(delimitation);
+		for (Integer i : delimitation) {
+			lowerEmptySpace++;
+			if (i == 0)
+				break;
+		}
+		word.topLeftCorner.y = word.topLeftCorner.y + upperEmptySpace;
+		word.topRightCorner.y = word.topRightCorner.y + upperEmptySpace;
+		word.bottomLeftCorner.y = word.bottomLeftCorner.y - lowerEmptySpace;
+		word.bottomRightCorner.y = word.bottomRightCorner.y - lowerEmptySpace;
+	}
 
 	@Override
 	public void computeColumns(Image image) {
@@ -180,16 +208,16 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 			topLeftCorner = new Point(0, 0);
 			topRightCorner = new Point(image.pixels[0].length, 0);
 		} else {
-			topLeftCorner = image.header.bottomLeftCorner;
-			topRightCorner = image.header.bottomRightCorner;
+			topLeftCorner = new Point(0,image.header.bottomLeftCorner.y);
+			topRightCorner = new Point(image.pixels[0].length,image.header.bottomRightCorner.y);
 		}
 
 		if (image.footnote == null) {
 			bottomLeftCorner = new Point(0, image.pixels.length);
 			bottomRightCorner = new Point(image.pixels[0].length, image.pixels.length);
 		} else {
-			bottomLeftCorner = image.footnote.topLeftCorner;
-			bottomRightCorner = image.footnote.topRightCorner;
+			bottomLeftCorner = new Point(0,image.footnote.topLeftCorner.y);
+			bottomRightCorner = new Point(image.pixels[0].length, image.footnote.topRightCorner.y);
 		}
 
 		boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, topLeftCorner, topRightCorner,
@@ -315,6 +343,41 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 					lastParagraph.add(line);
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void computeWords(Image image) {
+		for (Column column : image.columns) {
+			for(Line line : column.lines) {
+				line.words = new ArrayList<Word>();
+				
+				boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, line.topLeftCorner, line.topRightCorner,
+						line.bottomLeftCorner, line.bottomRightCorner);
+				
+				ArrayList<Double> lineBlackness = simpleOperations.getVerticalBlackness(pixels);
+
+				ArrayList<Integer> wordsDelimitation = getDelimitation(lineBlackness, 10);
+				
+				int wordStart = 0;
+				int lastItem = 1;
+				for (int i = 0; i < wordsDelimitation.size(); i++) {
+					if (wordsDelimitation.get(i) != lastItem || i == wordsDelimitation.size() - 1) {
+						if (lastItem == 1) {
+							wordStart = i;
+						} else {
+							line.words.add(new Word(new Point(wordStart, 0), new Point(i, 0),
+									new Point(wordStart, line.bottomLeftCorner.y), new Point(i, line.bottomLeftCorner.y)));
+						}
+					}
+					lastItem = wordsDelimitation.get(i);
+				}
+				
+				for(Word word : line.words) {
+					verticallyCorrectWord(image,word);
+				}
+			}
+			
 		}
 	}
 
