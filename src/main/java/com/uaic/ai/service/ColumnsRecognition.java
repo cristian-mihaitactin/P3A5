@@ -14,5 +14,7 @@ public interface ColumnsRecognition {
     void computeParagraphs(Image image);
 
     void computeColumns(Image image);
+    
+    void computeWords(Image image);
 
 }

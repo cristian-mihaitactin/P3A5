@@ -40,7 +40,7 @@ public class SegmentationController {
         this.footnotesService = footnotesService;
     }
 
-    @PostMapping(value = "", produces = "application/json")
+    @PostMapping(value = "/solution", produces = "application/json")
     public ImageDto getAll(@RequestPart("image") MultipartFile image) {
 
         Image imageResult = new Image();
@@ -66,7 +66,8 @@ public class SegmentationController {
             columnsRecognitionService.computeLinesOfColumns(imageResult);
             
             columnsRecognitionService.computeParagraphs(imageResult);
-
+            
+            columnsRecognitionService.computeWords(imageResult);
 
             return imageMapper.map(imageResult);
         }

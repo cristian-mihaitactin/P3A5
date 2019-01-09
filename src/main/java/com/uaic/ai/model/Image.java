@@ -1,7 +1,6 @@
 package com.uaic.ai.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Image {
 	public boolean[][] pixels;
