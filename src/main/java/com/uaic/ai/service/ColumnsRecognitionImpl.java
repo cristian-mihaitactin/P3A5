@@ -3,6 +3,7 @@ package com.uaic.ai.service;
 import com.uaic.ai.model.Column;
 import com.uaic.ai.model.Image;
 import com.uaic.ai.model.Line;
+import com.uaic.ai.model.Paragraph;
 import com.uaic.ai.model.Pixel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -116,8 +117,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		return normalizeDelimitation(delimitation);
 	}
 
-	@Override
-	public void verticallyCorrectColumn(Image image, Column column) {
+	private void verticallyCorrectColumn(Image image, Column column) {
 		boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, column.topLeftCorner, column.topRightCorner,
 				column.bottomLeftCorner, column.bottomRightCorner);
 		ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
@@ -143,31 +143,30 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		column.bottomRightCorner.y = column.bottomRightCorner.y - lowerEmptySpace;
 	}
 
-	@Override
-	public void computeLinesOfColumns(Image image) {
+	private void horizontallyCorrectLine(Image image, Line line) {
+		boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, line.topLeftCorner, line.topRightCorner,
+				line.bottomLeftCorner, line.bottomRightCorner);
+		ArrayList<Double> verticalBlackness = simpleOperations.getVerticalBlackness(pixels);
 
-		for (Column column : image.columns) {
-			boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, column.topLeftCorner,
-					column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
-			ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
-			ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 2);
+		ArrayList<Integer> delimitation = getDelimitation(verticalBlackness, 2);
 
-			int lineStart = 0;
-			int lastItem = 1;
-			for (int i = 0; i < delimitation.size(); i++) {
-				if (delimitation.get(i) != lastItem || i == delimitation.size() - 1) {
-					if (lastItem == 1) {
-						lineStart = i;
-					} else {
-						column.lines.add(new Line(new Point(column.topLeftCorner.x, column.topLeftCorner.y + lineStart),
-								new Point(column.topRightCorner.x, column.topLeftCorner.y + lineStart),
-								new Point(column.topLeftCorner.x, column.topLeftCorner.y + i),
-								new Point(column.topRightCorner.x, column.topLeftCorner.y + i)));
-					}
-				}
-				lastItem = delimitation.get(i);
-			}
+		int startEmptySpace = 0;
+		int endEmptySpace = 0;
+		for (Integer i : delimitation) {
+			startEmptySpace++;
+			if (i == 0)
+				break;
 		}
+		Collections.reverse(delimitation);
+		for (Integer i : delimitation) {
+			endEmptySpace++;
+			if (i == 0)
+				break;
+		}
+		line.topLeftCorner.x = line.topLeftCorner.x + startEmptySpace;
+		line.topRightCorner.x = line.topRightCorner.x - endEmptySpace;
+		line.bottomLeftCorner.x = line.bottomLeftCorner.x + startEmptySpace;
+		line.bottomRightCorner.x = line.bottomRightCorner.x - endEmptySpace;
 	}
 
 	@Override
@@ -218,9 +217,105 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		for (Column column : columns) {
 			verticallyCorrectColumn(image, column);
 		}
-		
+
 		image.columns = columns;
-		
+
 		filterColumns(image);
 	}
+
+	@Override
+	public void computeLinesOfColumns(Image image) {
+
+		for (Column column : image.columns) {
+			boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, column.topLeftCorner,
+					column.topRightCorner, column.bottomLeftCorner, column.bottomRightCorner);
+			ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
+			ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 2);
+
+			int lineStart = 0;
+			int lastItem = 1;
+			for (int i = 0; i < delimitation.size(); i++) {
+				if (delimitation.get(i) != lastItem || i == delimitation.size() - 1) {
+					if (lastItem == 1) {
+						lineStart = i;
+					} else {
+						column.lines.add(new Line(new Point(column.topLeftCorner.x, column.topLeftCorner.y + lineStart),
+								new Point(column.topRightCorner.x, column.topLeftCorner.y + lineStart),
+								new Point(column.topLeftCorner.x, column.topLeftCorner.y + i),
+								new Point(column.topRightCorner.x, column.topLeftCorner.y + i)));
+					}
+				}
+				lastItem = delimitation.get(i);
+			}
+		}
+
+		for (Column column : image.columns) {
+			for (Line line : column.lines) {
+				horizontallyCorrectLine(image, line);
+			}
+		}
+	}
+
+	private int getMinStartingLine(ArrayList<Line> lines) {
+		int min = 10000;
+		for (Line line : lines) {
+			if (line.bottomLeftCorner.x < min) {
+				min = line.bottomLeftCorner.x;
+			}
+		}
+		return min;
+	}
+
+	private int getMaxEndingLine(ArrayList<Line> lines) {
+		int max = 0;
+		for (Line line : lines) {
+			if (line.bottomLeftCorner.x > max) {
+				max = line.bottomRightCorner.x;
+			}
+		}
+		return max;
+	}
+	
+	private void createParagraph(Image image,ArrayList<Line> lines) {
+		int endingLine = getMaxEndingLine(lines);
+		int startingLine = getMinStartingLine(lines);
+		if(lines.isEmpty())
+			return;
+		image.paragraphs.add(new Paragraph(new Point(startingLine, lines.get(0).topLeftCorner.y),
+				new Point(endingLine, lines.get(0).topLeftCorner.y),
+				new Point(startingLine, lines.get(lines.size() - 1).bottomRightCorner.y),
+				new Point(endingLine, lines.get(lines.size() - 1).bottomRightCorner.y)));
+	}
+
+	@Override
+	public void computeParagraphs(Image image) {
+		image.paragraphs = new ArrayList<Paragraph>();
+		
+		for (Column column : image.columns) {
+			ArrayList<ArrayList<Line>> clusters = simpleOperations.kMeansClustering(column);
+
+			ArrayList<Line> lastParagraph = new ArrayList<Line>();
+			for (Line line : column.lines) {
+				if (lastParagraph.isEmpty() && !clusters.get(2).contains(line)) {
+					lastParagraph.add(line);
+				} else if (clusters.get(1).contains(line)) {
+					createParagraph(image, lastParagraph);
+					
+					lastParagraph = new ArrayList<Line>();
+					lastParagraph.add(line);
+				} else if(clusters.get(2).contains(line)) {
+					createParagraph(image, lastParagraph);
+					
+					lastParagraph = new ArrayList<Line>();
+				} else if(column.lines.indexOf(line) == column.lines.size() - 1) {
+					lastParagraph.add(line);
+					
+					createParagraph(image, lastParagraph);
+				} else if(clusters.get(0).contains(line)) {
+					lastParagraph.add(line);
+				}
+			}
+		}
+	}
+
 }

@@ -47,9 +47,9 @@ public class SegmentationController {
 
         if (uploadImage(image)) {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-            String inputPath = STORAGE_LOCATION + "\\" + fileName;
-            String clientPath = STORAGE_LOCATION + "\\client_" + fileName;
-            String outputPath = STORAGE_LOCATION + "\\output_" + fileName;
+            String inputPath = Paths.get(STORAGE_LOCATION.toString(), fileName).toString();
+            String clientPath = Paths.get(STORAGE_LOCATION.toString(),"client_" + fileName).toString();
+            String outputPath = Paths.get(STORAGE_LOCATION.toString(), "output_" + fileName).toString();
 
             imageService.correctImage(inputPath, clientPath, outputPath);
             
@@ -64,6 +64,8 @@ public class SegmentationController {
             columnsRecognitionService.computeColumns(imageResult);
             
             columnsRecognitionService.computeLinesOfColumns(imageResult);
+            
+            columnsRecognitionService.computeParagraphs(imageResult);
 
 
             return imageMapper.map(imageResult);

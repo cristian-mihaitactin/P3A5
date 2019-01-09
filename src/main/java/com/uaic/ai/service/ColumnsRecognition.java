@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public interface ColumnsRecognition {
 
     ArrayList<Integer> getDelimitation(ArrayList<Double> blackness, double sensitivity);
-
-    void verticallyCorrectColumn(Image image, Column column);
-
+    
     void computeLinesOfColumns(Image image);
+    
+    void computeParagraphs(Image image);
 
     void computeColumns(Image image);
 
