@@ -23,7 +23,7 @@ import java.nio.file.*;
 @RequestMapping("/segmentation")
 public class SegmentationController {
 
-    private static final Path STORAGE_LOCATION = Paths.get("C:\\Users\\gabri\\Desktop\\Git\\P3A5\\src\\main\\resources");
+    private static final Path STORAGE_LOCATION = Paths.get("C:","Users","gabri","Desktop","Git","P3A5","src","main","resources");
     private ColumnsRecognition columnsRecognitionService;
     private ImageMapper imageMapper;
     private ImageService imageService;
@@ -82,9 +82,9 @@ public class SegmentationController {
 
         if (uploadImage(image)) {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-            String inputPath = STORAGE_LOCATION + "\\" + fileName;
-            String clientPath = STORAGE_LOCATION + "\\client_" + fileName;
-            String outputPath = STORAGE_LOCATION + "\\output_" + fileName;
+            String inputPath = Paths.get(STORAGE_LOCATION.toString(), fileName).toString();
+            String clientPath = Paths.get(STORAGE_LOCATION.toString(),"client_" + fileName).toString();
+            String outputPath = Paths.get(STORAGE_LOCATION.toString(), "output_" + fileName).toString();
 
             imageService.correctImage(inputPath, clientPath, outputPath);
             
@@ -113,7 +113,7 @@ public class SegmentationController {
 
         if (uploadImage(image)) {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-            String imagePath = STORAGE_LOCATION + "\\" + fileName;
+            String imagePath = Paths.get(STORAGE_LOCATION.toString(), fileName).toString();
 
             //create binary array in Image Object
             imageResult = imageService.processImage(imagePath);
@@ -139,7 +139,7 @@ public class SegmentationController {
 
         if (uploadImage(image)) {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-            String imagePath = STORAGE_LOCATION + "\\" + fileName;
+            String imagePath = Paths.get(STORAGE_LOCATION.toString(), fileName).toString();
 
             //create binary array in Image Object
             imageResult = imageService.processImage(imagePath);

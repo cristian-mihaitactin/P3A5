@@ -235,8 +235,8 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 				if (lastItem == 1) {
 					columnStart = i;
 				} else {
-					columns.add(new Column(new Point(columnStart, 0), new Point(i, 0),
-							new Point(columnStart, image.footnote.topRightCorner.y), new Point(i,image.footnote.topRightCorner.y)));
+					columns.add(new Column(new Point(columnStart, topLeftCorner.y), new Point(i, topLeftCorner.y),
+							new Point(columnStart, bottomLeftCorner.y), new Point(i,bottomLeftCorner.y)));
 				}
 			}
 			lastItem = columnsDelimitation.get(i);
