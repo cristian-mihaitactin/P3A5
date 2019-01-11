@@ -129,15 +129,15 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		int upperEmptySpace = 0;
 		int lowerEmptySpace = 0;
 		for (Integer i : delimitation) {
-			upperEmptySpace++;
 			if (i == 0)
 				break;
+			upperEmptySpace++;
 		}
 		Collections.reverse(delimitation);
 		for (Integer i : delimitation) {
-			lowerEmptySpace++;
 			if (i == 0)
 				break;
+			lowerEmptySpace++;
 		}
 		column.topLeftCorner.y = column.topLeftCorner.y + upperEmptySpace;
 		column.topRightCorner.y = column.topRightCorner.y + upperEmptySpace;
@@ -155,15 +155,15 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		int startEmptySpace = 0;
 		int endEmptySpace = 0;
 		for (Integer i : delimitation) {
-			startEmptySpace++;
 			if (i == 0)
 				break;
+			startEmptySpace++;
 		}
 		Collections.reverse(delimitation);
 		for (Integer i : delimitation) {
-			endEmptySpace++;
 			if (i == 0)
 				break;
+			endEmptySpace++;
 		}
 		line.topLeftCorner.x = line.topLeftCorner.x + startEmptySpace;
 		line.topRightCorner.x = line.topRightCorner.x - endEmptySpace;
@@ -176,20 +176,20 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 				word.bottomLeftCorner, word.bottomRightCorner);
 		ArrayList<Double> horizontalBlackness = simpleOperations.getHorizontalBlackness(pixels);
 
-		ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 2);
+		ArrayList<Integer> delimitation = getDelimitation(horizontalBlackness, 10);
 
 		int upperEmptySpace = 0;
 		int lowerEmptySpace = 0;
 		for (Integer i : delimitation) {
-			upperEmptySpace++;
 			if (i == 0)
 				break;
+			upperEmptySpace++;
 		}
 		Collections.reverse(delimitation);
 		for (Integer i : delimitation) {
-			lowerEmptySpace++;
 			if (i == 0)
 				break;
+			lowerEmptySpace++;
 		}
 		word.topLeftCorner.y = word.topLeftCorner.y + upperEmptySpace;
 		word.topRightCorner.y = word.topRightCorner.y + upperEmptySpace;
@@ -348,7 +348,8 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 	
 	@Override
 	public void computeWords(Image image) {
-		for (Column column : image.columns) {
+		for (Column column : image.columns) 
+		{
 			for(Line line : column.lines) {
 				line.words = new ArrayList<Word>();
 				
@@ -366,8 +367,8 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 						if (lastItem == 1) {
 							wordStart = i;
 						} else {
-							line.words.add(new Word(new Point(wordStart, 0), new Point(i, 0),
-									new Point(wordStart, line.bottomLeftCorner.y), new Point(i, line.bottomLeftCorner.y)));
+							line.words.add(new Word(new Point(line.topLeftCorner.x + wordStart, line.topRightCorner.y), new Point(line.topLeftCorner.x + i, line.topRightCorner.y),
+									new Point(line.topLeftCorner.x + wordStart, line.bottomLeftCorner.y), new Point(line.topLeftCorner.x + i, line.bottomLeftCorner.y)));
 						}
 					}
 					lastItem = wordsDelimitation.get(i);
