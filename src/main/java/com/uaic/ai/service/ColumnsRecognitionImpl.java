@@ -5,6 +5,7 @@ import com.uaic.ai.model.Image;
 import com.uaic.ai.model.Line;
 import com.uaic.ai.model.Paragraph;
 import com.uaic.ai.model.Pixel;
+import com.uaic.ai.model.Sidenote;
 import com.uaic.ai.model.Word;
 
 import org.opencv.core.Core;
@@ -380,6 +381,126 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 			}
 			
 		}
+	}
+
+	@Override
+	public void computeSidenotes(Image image) {
+		image.sidenotes = new ArrayList<Sidenote>();
+		
+		Point topLeftCorner;
+		Point topRightCorner;
+		Point bottomLeftCorner;
+		Point bottomRightCorner;
+
+		if (image.header == null) {
+			topLeftCorner = new Point(0, 0);
+			topRightCorner = new Point(image.pixels[0].length, 0);
+		} else {
+			topLeftCorner = new Point(0,image.header.bottomLeftCorner.y);
+			topRightCorner = new Point(image.pixels[0].length,image.header.bottomRightCorner.y);
+		}
+
+		if (image.footnote == null) {
+			bottomLeftCorner = new Point(0, image.pixels.length);
+			bottomRightCorner = new Point(image.pixels[0].length, image.pixels.length);
+		} else {
+			bottomLeftCorner = new Point(0,image.footnote.topLeftCorner.y);
+			bottomRightCorner = new Point(image.pixels[0].length, image.footnote.topRightCorner.y);
+		}
+	
+		Point topAuxPoint;
+		Point bottomAuxPoint;
+		for(Column column : image.columns) {
+			topAuxPoint = new Point(column.bottomLeftCorner.x, topLeftCorner.y);
+			bottomAuxPoint = new Point(column.bottomLeftCorner.x, bottomLeftCorner.y);
+			
+			image.sidenotes.add(new Sidenote(topLeftCorner,topAuxPoint, bottomLeftCorner, bottomAuxPoint));
+			
+			topLeftCorner = new Point(column.bottomRightCorner.x, topLeftCorner.y);
+			bottomLeftCorner = new Point(column.bottomRightCorner.x, bottomLeftCorner.y);
+			
+		}
+		
+		image.sidenotes.add(new Sidenote(topLeftCorner,topRightCorner, bottomLeftCorner, bottomRightCorner));
+		
+		for(int i = image.sidenotes.size() - 1; i >= 0; i--) {
+			boolean[][] pixels = simpleOperations.getPartOfPixels(image.pixels, image.sidenotes.get(i).topLeftCorner, image.sidenotes.get(i).topRightCorner,
+					image.sidenotes.get(i).bottomLeftCorner, image.sidenotes.get(i).bottomRightCorner);
+
+			ArrayList<Double> sidenoteBlackness = simpleOperations.getVerticalBlackness(pixels);
+
+			ArrayList<Integer> sidenoteDelimitation = getDelimitation(sidenoteBlackness, 10);
+			
+			boolean isGood = false;
+			for(int j = 0; j < sidenoteDelimitation.size() - 1; j++) {
+				if(sidenoteDelimitation.get(j) == 0)
+					isGood = true;
+			}
+			
+			if(!isGood) {
+				image.sidenotes.remove(i);
+				continue;
+			}
+			
+			int startEmptySpace = 0;
+			int endEmptySpace = 0;
+			for (Integer integ : sidenoteDelimitation) {
+				if (integ == 0)
+					break;
+				startEmptySpace++;
+			}
+			Collections.reverse(sidenoteDelimitation);
+			for (Integer integ : sidenoteDelimitation) {
+				if (integ == 0)
+					break;
+				endEmptySpace++;
+			}
+			
+			image.sidenotes.get(i).topLeftCorner.x = image.sidenotes.get(i).topLeftCorner.x + startEmptySpace;
+			image.sidenotes.get(i).topRightCorner.x = image.sidenotes.get(i).topRightCorner.x - endEmptySpace;
+			image.sidenotes.get(i).bottomLeftCorner.x = image.sidenotes.get(i).bottomLeftCorner.x + startEmptySpace;
+			image.sidenotes.get(i).bottomRightCorner.x = image.sidenotes.get(i).bottomRightCorner.x - endEmptySpace;
+			
+			sidenoteBlackness = simpleOperations.getHorizontalBlackness(pixels);
+
+			sidenoteDelimitation = getDelimitation(sidenoteBlackness, 10);
+			
+			isGood = false;
+			for(int j = 0; j < sidenoteDelimitation.size() - 1; j++) {
+				if(sidenoteDelimitation.get(j) == 0)
+					isGood = true;
+			}
+			
+			if(!isGood) {
+				image.sidenotes.remove(i);
+				continue;
+			}
+			
+			int upperEmptySpace = 0;
+			int lowerEmptySpace = 0;
+			for (Integer integ : sidenoteDelimitation) {
+				if (integ == 0)
+					break;
+				upperEmptySpace++;
+			}
+			Collections.reverse(sidenoteDelimitation);
+			for (Integer integ : sidenoteDelimitation) {
+				if (integ == 0)
+					break;
+				lowerEmptySpace++;
+			}
+			image.sidenotes.get(i).topLeftCorner.y = image.sidenotes.get(i).topLeftCorner.y + upperEmptySpace;
+			image.sidenotes.get(i).topRightCorner.y = image.sidenotes.get(i).topRightCorner.y + upperEmptySpace;
+			image.sidenotes.get(i).bottomLeftCorner.y = image.sidenotes.get(i).bottomLeftCorner.y - lowerEmptySpace;
+			image.sidenotes.get(i).bottomRightCorner.y = image.sidenotes.get(i).bottomRightCorner.y - lowerEmptySpace;
+		}
+		
+		for(int i = image.sidenotes.size() - 1; i >= 0; i--) {
+			if(image.sidenotes.get(i).bottomRightCorner.x - image.sidenotes.get(i).bottomLeftCorner.x < image.pixels[0].length/20) {
+				image.sidenotes.remove(i);
+			}
+		}
+
 	}
 
 }

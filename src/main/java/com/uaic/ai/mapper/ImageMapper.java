@@ -15,6 +15,7 @@ public class ImageMapper {
         imageDto.setHeader(image.getHeader());
         imageDto.setClientImage(image.getClientImage());
         imageDto.setParagraphs(image.getParagraphs());
+        imageDto.setSidenotes(image.getSidenotes());
         return imageDto;
     }
 

@@ -68,6 +68,8 @@ public class SegmentationController {
             columnsRecognitionService.computeParagraphs(imageResult);
             
             columnsRecognitionService.computeWords(imageResult);
+            
+            columnsRecognitionService.computeSidenotes(imageResult);
 
             return imageMapper.map(imageResult);
         }

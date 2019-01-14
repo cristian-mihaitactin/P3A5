@@ -6,6 +6,7 @@ public class Image {
 	public boolean[][] pixels;
 	public ArrayList<Column> columns;
 	public ArrayList<Paragraph> paragraphs;
+	public ArrayList<Sidenote> sidenotes;
 	public Footnote footnote;
 	public Header header;
 	public Statistics statistics;
@@ -72,6 +73,12 @@ public class Image {
 	public void setClientImage(String clientImage) {
 		this.clientImage = clientImage;
 	}
-    
-    
+
+	public ArrayList<Sidenote> getSidenotes() {
+		return sidenotes;
+	}
+
+	public void setSidenotes(ArrayList<Sidenote> sidenotes) {
+		this.sidenotes = sidenotes;
+	}
 }

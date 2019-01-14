@@ -145,9 +145,7 @@ public class ImageServiceImpl implements ImageService {
                 matrix[i][j] = ((pixel - darkPixel) * (pixel - darkPixel) < (brightPixel - pixel) * (brightPixel - pixel));
             }
         }
-
-//      Image img = new Image();
-//      img.pixels = matrix;
+        
         return matrix;
     }
     

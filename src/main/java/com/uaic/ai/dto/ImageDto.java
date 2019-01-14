@@ -4,6 +4,7 @@ import com.uaic.ai.model.Column;
 import com.uaic.ai.model.Footnote;
 import com.uaic.ai.model.Header;
 import com.uaic.ai.model.Paragraph;
+import com.uaic.ai.model.Sidenote;
 import com.uaic.ai.model.Statistics;
 import com.uaic.ai.model.Word;
 
@@ -14,8 +15,9 @@ public class ImageDto {
 	private ArrayList<Column> columns;
 	private Footnote footnote;
 	private Header header;
-	private String clientImage;
 	private ArrayList<Paragraph> paragraphs;
+	private ArrayList<Sidenote> sidenotes;
+	private String clientImage;
 
 	public ArrayList<Column> getColumns() {
 		return columns;
@@ -56,4 +58,12 @@ public class ImageDto {
 	public void setParagraphs(ArrayList<Paragraph> paragraphs) {
 		this.paragraphs = paragraphs;
 	}
+
+	public ArrayList<Sidenote> getSidenotes() {
+		return sidenotes;
+	}
+
+	public void setSidenotes(ArrayList<Sidenote> sidenotes) {
+		this.sidenotes = sidenotes;
+	}	
 }
