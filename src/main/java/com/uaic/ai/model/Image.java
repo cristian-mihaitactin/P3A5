@@ -1,11 +1,11 @@
-package com.uaic.ai.model;
+package model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Image {
 	public boolean[][] pixels;
 	public ArrayList<Column> columns;
+	public ArrayList<Paragraph> paragraphs;
 	public Footnote footnote;
 	public Header header;
 	public Statistics statistics;
@@ -53,7 +53,15 @@ public class Image {
         return statistics;
     }
 
-    public void setStatistics(Statistics statistics) {
+    public ArrayList<Paragraph> getParagraphs() {
+		return paragraphs;
+	}
+
+	public void setParagraphs(ArrayList<Paragraph> paragraphs) {
+		this.paragraphs = paragraphs;
+	}
+
+	public void setStatistics(Statistics statistics) {
         this.statistics = statistics;
     }
 
