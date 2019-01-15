@@ -298,7 +298,7 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 	private int getMaxEndingLine(ArrayList<Line> lines) {
 		int max = 0;
 		for (Line line : lines) {
-			if (line.bottomLeftCorner.x > max) {
+			if (line.bottomRightCorner.x > max) {
 				max = line.bottomRightCorner.x;
 			}
 		}
