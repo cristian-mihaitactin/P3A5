@@ -1,5 +1,4 @@
 package com.uaic.ai.service;
-
 import com.uaic.ai.model.Image;
 import com.uaic.ai.model.Statistics;
 import org.opencv.core.Core;
@@ -22,6 +21,45 @@ public class StatisticsServiceImpl implements StatisticsService{
         return blackPixelsInLine;
     }
 
+   int classifyInstance(double firstCluster,double secondCluster,double instance)
+   {
+    	return((firstCluster-instance)*(firstCluster-instance)<(secondCluster-instance)*(secondCluster-instance))?1:2;
+   }
+   
+   double getInferiorAverage(double[] data,double separator)
+   {
+	   int count=0;
+	   double sum=0;
+	   for(int i=0;i<data.length;i++)
+	   {
+		   if(data[i]<separator)
+		   {
+			   sum=sum+data[i];
+			   count++;
+		   }
+	   }
+	   if(count>0)
+		   return sum/count;
+	   return -1;
+   }
+   
+   double getSuperiorAverage(double[] data,double separator)
+   {
+	   int count=0;
+	   double sum=0;
+	   for(int i=0;i<data.length;i++)
+	   {
+		   if(data[i]>=separator)
+		   {
+			   sum=sum+data[i];
+			   count++;
+		   }
+	   }
+	   if(count>0)
+		   return sum/count;
+	   return -1;
+   }
+    
     @Override
     public void computeStatistics(Image img) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -67,7 +105,9 @@ public class StatisticsServiceImpl implements StatisticsService{
             avgBlackPixelsPerLine = (double) blackPixelsInLine[i] / matrix[i].length;
 
             // avgBlackPixelsPerLine closer to number of blackPixels per empty line, or to number of pixels per text line ?
-            if (((avgBlackPixelsPerLine - blackPixelsPerEmptyLine) * (avgBlackPixelsPerLine - blackPixelsPerEmptyLine)) < ((avgBlackPixelsPerLine - blackPixelsPerLine) * (avgBlackPixelsPerLine - blackPixelsPerLine))) {
+          //if (((avgBlackPixelsPerLine - blackPixelsPerEmptyLine) * (avgBlackPixelsPerLine - blackPixelsPerEmptyLine)) < ((avgBlackPixelsPerLine - blackPixelsPerLine) * (avgBlackPixelsPerLine - blackPixelsPerLine)))
+            if(classifyInstance(blackPixelsPerEmptyLine,blackPixelsPerLine,avgBlackPixelsPerLine)==1)
+            {
                 lineIsText[i] = false;
                 emptyLines++;
             } else {
@@ -80,6 +120,7 @@ public class StatisticsServiceImpl implements StatisticsService{
             }
         }
         avgEmptyLinesBetweenTextsLines = avgEmptyLinesBetweenTextsLines / emptySpacesCount;
+        
 
 
         int consecutiveEmptyLines = 0;
@@ -96,7 +137,12 @@ public class StatisticsServiceImpl implements StatisticsService{
             }
         }
         avgEmptyLinesBetweenTextsLines = inferiorLimit / emptySpacesCount;
-
+        
+        
+        double blackPixelsInLineClone[]=new double[blackPixelsInLine.length];
+        for(int i=0;i<blackPixelsInLine.length;i++)
+        	blackPixelsInLineClone[i]=blackPixelsInLine[i];
+       double pixelsInTitleLine=getInferiorAverage(blackPixelsInLineClone,getInferiorAverage(blackPixelsInLineClone,(double) blackPixelCount / (matrix.length)));
 
         Statistics statistics = new Statistics();
         statistics.blackPixelsPerLine = blackPixelsPerLine;
@@ -107,8 +153,11 @@ public class StatisticsServiceImpl implements StatisticsService{
         statistics.blackPixelCount = blackPixelCount;
         statistics.blackPixelsInLine = blackPixelsInLine;
         statistics.lineIsText = lineIsText;
+        statistics.potentialTitlePixelCount=pixelsInTitleLine;
 
         img.statistics = statistics;
+        
+        
     }
 
 }

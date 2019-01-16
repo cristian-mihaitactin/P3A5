@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e88d3df-c862-45cc-ba28-d763807c1556" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/uaic/ai/service/HeaderService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/uaic/ai/service/HeaderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/P3A5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/P3A5.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uaic/ai/controller/SegmentationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uaic/ai/controller/SegmentationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uaic/ai/model/Statistics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uaic/ai/model/Statistics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uaic/ai/service/StatisticsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uaic/ai/service/StatisticsServiceImpl.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,7 +38,7 @@
           <entry key="class" value="3" />
           <entry key="classpath" value="2" />
           <entry key="gitignore" value="2" />
-          <entry key="java" value="167" />
+          <entry key="java" value="168" />
           <entry key="jpg" value="25" />
           <entry key="png" value="7" />
           <entry key="project" value="2" />
@@ -44,7 +51,7 @@
           <entry key="CLASS" value="3" />
           <entry key="Eclipse" value="4" />
           <entry key="Image" value="32" />
-          <entry key="JAVA" value="167" />
+          <entry key="JAVA" value="168" />
           <entry key="PLAIN_TEXT" value="8" />
           <entry key="XML" value="6" />
         </counts>
@@ -76,11 +83,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/controller/SegmentationController.java">
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="55" selection-start-line="14" selection-start-column="55" selection-end-line="14" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/HeaderServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="8" column="62" selection-start-line="8" selection-start-column="62" selection-end-line="8" selection-end-column="62" />
+              <caret line="8" column="3" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -245,7 +264,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1057" />
@@ -507,8 +526,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20255864" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20255864" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -524,7 +544,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50159913" side_tool="true" weight="0.22639485" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="9" sideWeight="0.4989339" visible="true" weight="0.21995708" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.4989339" visible="true" weight="0.21995708" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.33154505" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -607,16 +627,10 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/bible-page-2.jpg" />
-    <entry file="file://$PROJECT_DIR$/src/main/resources/bible-page-1.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/page-with-footnote-2.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/bible-page-1.jpg" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/page-with-footnote-2.jpg" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/page-with-footnote-1.jpg" />
-    <entry file="file://$PROJECT_DIR$/src/main/resources/page-with-footnote-3.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/page-with-footnote-3.jpg" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/model/Line.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -625,9 +639,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/7jo8g.png" />
-    <entry file="file://$PROJECT_DIR$/src/main/resources/anotherSample.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/anotherSample.png" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/TesseractTextRecognitionImpl.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/TesseractTextRecognition.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/TextRecognitionImpl.java" />
@@ -751,16 +763,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/HeaderServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="3" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/ColumnsRecognitionImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="884">
@@ -828,8 +830,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/controller/SegmentationController.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="55" selection-start-line="14" selection-start-column="55" selection-end-line="14" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/uaic/ai/service/HeaderServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="8" column="62" selection-start-line="8" selection-start-column="62" selection-end-line="8" selection-end-column="62" />
+          <caret line="8" column="3" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -64,11 +64,11 @@ public class SegmentationController {
             columnsRecognitionService.computeColumns(imageResult);
             
             columnsRecognitionService.computeLinesOfColumns(imageResult);
-            
+
             columnsRecognitionService.computeParagraphs(imageResult);
-            
+
             columnsRecognitionService.computeWords(imageResult);
-            
+
             columnsRecognitionService.computeSidenotes(imageResult);
 
             return imageMapper.map(imageResult);
