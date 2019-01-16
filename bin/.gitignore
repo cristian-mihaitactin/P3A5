@@ -27,7 +27,3 @@ hs_err_pid*
 
 .classpath
 .project
-/.gitignore
-/.idea/
-/.settings/
-/src/

@@ -29,15 +29,17 @@ public class SegmentationController {
     private ImageService imageService;
     private StatisticsService statisticsService;
     private FootnotesService footnotesService;
+    private HeaderService headerService;
 
     @Autowired
     public SegmentationController(ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper, ImageService imageService,
-                                  StatisticsService statisticsService, FootnotesServiceImpl footnotesService) {
+                                  StatisticsService statisticsService, FootnotesServiceImpl footnotesService, HeaderService headerService) {
         this.columnsRecognitionService = columnsRecognitionService;
         this.imageMapper = imageMapper;
         this.imageService = imageService;
         this.statisticsService = statisticsService;
         this.footnotesService = footnotesService;
+        this.headerService = headerService;
     }
 
     @PostMapping(value = "/solution", produces = "application/json")
@@ -60,6 +62,8 @@ public class SegmentationController {
             statisticsService.computeStatistics(imageResult);
             
             footnotesService.computeFootnotes(imageResult);
+            
+            headerService.computeHeader(imageResult);
 
             columnsRecognitionService.computeColumns(imageResult);
             
