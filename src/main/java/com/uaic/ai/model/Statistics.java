@@ -1,4 +1,6 @@
-package model;
+package com.uaic.ai.model;
+
+
 public class Statistics {
 
 	public double blackPixelsPerLine, blackPixelsPerTextLine, blackPixelsPerEmptyLine,avgBlackPixelsPerLine,avgEmptyLinesBetweenTextsLines,potentialTitlePixelCount;

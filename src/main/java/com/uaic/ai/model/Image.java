@@ -1,4 +1,4 @@
-package model;
+package com.uaic.ai.model;
 
 import java.util.ArrayList;
 
