@@ -56,10 +56,22 @@ Componente: [Maven](https://maven.apache.org/), [Tomcat](http://tomcat.apache.or
 
 Pentru demo, recomandam sa folositi proiectele:
 
-- [P3A5-gateway](https://github.com/wildProgrammer/P3A5-gateway)
-- [P3A5-front-end](https://github.com/wildProgrammer/P3A5-frontend)
+#### Front-end
 
-Acestea folosesc framework-ul Angular si NodeJS pentru a communica cu solutia.
+Repo: https://github.com/wildProgrammer/P3A5-frontend
+
+Tehnologii folosite:
+*	[Angular 7](https://angular.io/guide/releases)
+*	[TypeScript](https://www.typescriptlang.org/)
+
+#### Gateway
+
+Repo: https://github.com/wildProgrammer/P3A5-gateway
+
+Tehnologii folosite:
+*	[Node.js](https://nodejs.org/en/)
+*	[Express.js](https://expressjs.com/)
+*	[MongoDB](https://www.mongodb.com/)
 
 
 
