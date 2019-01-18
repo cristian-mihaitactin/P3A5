@@ -1,6 +1,7 @@
 # P3A5
 
 Repository pentru Proiectul 3 la disciplina "Inteligenta Artificiala".
+Prezentarea powerpoint [here](https://docs.google.com/presentation/d/1vUWkaYTnEzp688cr_F6S_hSVvFBexr6Qc_zD7rcDnxA/edit?usp=sharing)
 
 ## Description
 
