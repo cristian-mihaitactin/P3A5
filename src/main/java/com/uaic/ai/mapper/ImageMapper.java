@@ -4,6 +4,9 @@ import com.uaic.ai.dto.ImageDto;
 import com.uaic.ai.model.Image;
 import org.springframework.stereotype.Service;
 
+/**
+ * Mapper that converts an "Image" object do an "ImageDto"
+ */
 @Service
 public class ImageMapper {
 

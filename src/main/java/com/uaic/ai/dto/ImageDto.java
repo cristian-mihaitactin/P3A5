@@ -10,6 +10,12 @@ import com.uaic.ai.model.Word;
 
 import java.util.ArrayList;
 
+/**
+ * A Data Transfer Object class that contains the coordonates 
+ * for the points that represent
+ * "areas of interest" of an Image with text.
+ * This class is inteded as a contract with other API's
+ */
 public class ImageDto {
 
 	private ArrayList<Column> columns;
