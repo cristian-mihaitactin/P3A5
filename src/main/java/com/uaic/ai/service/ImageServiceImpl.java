@@ -11,6 +11,18 @@ import org.springframework.stereotype.Service;
 
 import com.uaic.ai.model.Image;
 
+/**
+ * 1. Rotim imaginea: Folosim Divide et Impera pentru a avea un algoritm eficient de cautare a unghiului corect de rotire (intrucat operatia de rotire
+ *             a imaginii si verificare a noii rotiri este costisitoare). Ne folosim si de paradigme specifice programarii dinamice deoarece stocam
+ *             intr-un dictionar unghiul rotirii si 'scorul' acelei rotiri, pentru a nu calcula de 2 ori acelasi lucru => un algoritm foarte eficient
+ * 2. Curatam imaginea. Fundalul imaginii este albit, ne folosim de contrast pentru a accentua scrisul => o imagine alb - negru cu scrisul mai bine definit
+ * 3. Taiem imaginea. Daca imaginea a fost rotita latimea acesteia va creste din cauza surplusului care este impins. Pentru a rezolva acest lucru
+ *             vom taia toate marginile imaginii la o anumita distanta de inceputul textului.
+ *
+ * Dupa acesti 3 pasi vom avea 2 imaginii.
+ *                 Prima este rotita, curatata si taiata (pe aceasta vom continua sa lucram noi).
+ *                 A doua este doar rotita si taiata (aceasta va fi trimisa la client), nu o curatam deoarece riscam sa stricam detaliile textului.
+ */
 @Service
 public class ImageServiceImpl implements ImageService {
 

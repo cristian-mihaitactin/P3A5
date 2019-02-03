@@ -16,6 +16,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Service that manages Column text areas and areas that those columns might contain
+ */
 @Service
 public class ColumnsRecognitionImpl implements ColumnsRecognition {
 
@@ -223,7 +226,14 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		sidenote.bottomLeftCorner.x = sidenote.bottomLeftCorner.x + startEmptySpace;
 		sidenote.bottomRightCorner.x = sidenote.bottomRightCorner.x - endEmptySpace;
 	}
-	
+
+	/**
+	 * 1. Vom extrage pixelii care ne intereseaza (intre header si footer)
+	 * 2. Vom realiza o scanare a pixelilor pe verticala => conturul pe planul X al coloanelor. Aceasta scanare este mai apoi normalizata si corectata.
+	 * 3. Delimitam coloanele si le corectam pe planul Y (taiem parti din partea de sus si de jos a coloanei pana cand intalnim text, astfel o coloana nu va cuprinde parti de spatiu gol
+	 *
+	 * @param image
+	 */
 	@Override
 	public void computeColumns(Image image) {
 		Point topLeftCorner;
@@ -278,6 +288,12 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		filterColumns(image);
 	}
 
+	/**
+	 * 1. Pentru fiecare coloana detectata anterior vom extrage pixelii acesteia
+	 * 2. Vom realiza o scanare a pixelilor pe orizontala => conturul pe planul Y al liniilor. Normalizam, ingrosam si corectam scanarea.
+	 * 3. Delimitam si corectam fiecare linie pe planul X (taiem parti din stanga si din dreapta liniei pana cand intalnim text)
+	 * @param image
+	 */
 	@Override
 	public void computeLinesOfColumns(Image image) {
 
@@ -342,6 +358,12 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 				new Point(endingLine, lines.get(lines.size() - 1).bottomRightCorner.y)));
 	}
 
+	/**
+	 * 1. Parcurgem fiecare coloana detectata anterior
+	 * 2. Vom clusteriza liniile coloanei in 3 categorii: linii de start, linii de alineat si subtitluri. Pentru a face acest lucru ne folosim de algoritmul K-means (un algoritm machine learning) adaptat pentru problema noastra. Acesta va incepe cu 3 clusteri, primul setat la X = 0 relativ la coloana (la inceputul din stanga al coloanei), al doilea la aproximativ 10% in coordonata X a coloanei, si al treilea la 50%. Dupa mai multe iteratii acesta va clustreriza toate liniile a apartinand uneia din cele 3 categorii.
+	 * 3. Dupa ce avem clusterizarea parcurgem liniile coloanei si vom crea paragrafele in mod logic
+	 * @param image
+	 */
 	@Override
 	public void computeParagraphs(Image image) {
 		image.paragraphs = new ArrayList<Paragraph>();
@@ -372,7 +394,14 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 			}
 		}
 	}
-	
+
+	/**
+	 * 1. Parcurgem fiecare linie din fiecare coloana si extragem doar pixelii acesteia
+	 * 2. Vom realiza o scanare a pixelilor pe verticala => conturul pe planul X al cuvintelior. Aceasta scanare este mai apoi normalizata si corectata.
+	 * 3. Delimitam cuvintele pe planul Y la fel cum am delimitat coloanele (cu o alta sensibilitate)
+	 *
+	 * @param image
+	 */
 	@Override
 	public void computeWords(Image image) {
 		for (Column column : image.columns) 
@@ -444,6 +473,12 @@ public class ColumnsRecognitionImpl implements ColumnsRecognition {
 		}
 	}
 
+	/**
+	 * 1. Vom extrage pixelii care ne intereseaza (intre header si footer, si mai apoi intre marginile paginii si coloane + intre coloane)
+	 * 2. Vom realiza o scanare a pixelilor pe orizontala => un contur pe planul Y al notitelor marginale. Mai apoi vom realiza o detectie mai ampla a notitelor, intrucat nu vrem sa detectam fiecare rand al notitei, ci intreaga notita. Astfel vom delimita, corecta si ingrosa delimitarea pe  planul Y al notitelor marginal
+	 * 3. Delimitam si corectam fiecare notita marginala pe planul X
+	 * @param image
+	 */
 	@Override
 	public void computeSidenotes(Image image) {
 		image.sidenotes = new ArrayList<Sidenote>();
