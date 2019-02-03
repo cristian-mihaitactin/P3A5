@@ -19,6 +19,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 
+/**
+ * This controller will return the coordinates
+ * for the 4 corners that represent a point of interest
+ * (i.e. Collumns, Lines, Paragraphs etc.) of any
+ * image that contains text.
+*/
 @RestController
 @RequestMapping("/segmentation")
 public class SegmentationController {
@@ -31,6 +37,16 @@ public class SegmentationController {
     private FootnotesService footnotesService;
     private HeaderService headerService;
 
+    /**
+     * Constructor for the Segmentation Controller
+     * 
+     * @param columnsRecognitionService     Services for detecting and managing columns
+     * @param imageMapper                   Mapper that converts an "Image" object do an "ImageDto"
+     * @param imageService                  Interface that exposes methods needed for processing an Image
+     * @param statisticsService             Service that manages the pixel statistics of an Image
+     * @param footnotesService              Service for detecting and managing footnotes
+     * @param headerService                 Service for detecting and managing the header
+     */
     @Autowired
     public SegmentationController(ColumnsRecognition columnsRecognitionService, ImageMapper imageMapper, ImageService imageService,
                                   StatisticsService statisticsService, FootnotesServiceImpl footnotesService, HeaderService headerService) {
@@ -42,6 +58,15 @@ public class SegmentationController {
         this.headerService = headerService;
     }
 
+    /**
+     * Action returns an ImageDto type object containing
+     * the coordinates of the detected "areas of interest"
+     * found in a provided image
+     * 
+     * @param image     Provided image
+     * 
+     * @return ImageDto object
+     */
     @PostMapping(value = "/solution", produces = "application/json")
     public ImageDto getAll(@RequestPart("image") MultipartFile image) {
 
@@ -81,6 +106,15 @@ public class SegmentationController {
         return imageMapper.map(null);
     }
     
+    /**
+     * Action returns an ImageDto type object containing
+     * the coordinates of the detected "Collumns" of text
+     * found in a provided image
+     * 
+     * @param image     Provided image
+     * 
+     * @return ImageDto object
+     */
     @PostMapping(value = "/get-cols", produces = "application/json")
     public ImageDto getColumns(@RequestPart("image") MultipartFile image) {
 
@@ -111,7 +145,15 @@ public class SegmentationController {
         return imageMapper.map(null);
     }
 
-
+    /**
+     * Action returns an ImageDto type object containing
+     * the coordinates of the detected "Footnotes" of text
+     * found in a provided image
+     * 
+     * @param image     Provided image
+     * 
+     * @return ImageDto object
+     */
     @PostMapping(value = "/get-footnotes", produces = "application/json")
     public ImageDto getFootnotes(@RequestPart("image") MultipartFile image) {
 
@@ -137,7 +179,15 @@ public class SegmentationController {
         return imageMapper.map(null);
     }
 
-
+    /**
+     * Action returns an ImageDto type object containing
+     * the statisticts that were obtained from
+     * a provided image
+     * 
+     * @param image     Provided image
+     * 
+     * @return ImageDto object
+     */
     @PostMapping(value = "/get-stats", produces = "application/json")
     public ImageDto getStatistics(@RequestPart("image") MultipartFile image) {
 
@@ -159,6 +209,12 @@ public class SegmentationController {
         return imageMapper.map(null);
     }
 
+    /**
+     * Get a string containg the Image converted in 
+     * Base64 format
+     * 
+     * @return String with a base64 Image
+     */
     @GetMapping(value = "/get-image-base64")
     public String sendBase64Image() {
 
@@ -184,6 +240,12 @@ public class SegmentationController {
 
     }
 
+    /**
+     * Get a byte array containg the Image converted in 
+     * Base64 format
+     * 
+     * @return byte array with a base64 Image
+     */
     @GetMapping(value = "/get-image-bytes")
     public byte[] sendBytesFromBase64Image() {
 
@@ -237,6 +299,10 @@ public class SegmentationController {
 
     }
 
+    /**
+     * Retrieve the image at the path held in the @param path 
+     * and store it in the @param image parameter
+     */
     private void setClientImage(Image image, String path) {
         try {
 

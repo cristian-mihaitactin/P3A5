@@ -3,7 +3,7 @@
 ( FOR INTELLIJ )
 Maven:
     -  https://www.mkyong.com/maven/how-to-install-maven-in-windows/
-    -  ! better name that system variable M2_HOME instead of MAVEN_HOME
+    -  name that system variable M2_HOME instead of MAVEN_HOME
     -  http://prntscr.com/lmo3nb
     -  s-ar putea sa trebuiasca un restart dupa ce ati adaugat System Variable
 
